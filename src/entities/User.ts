@@ -7,7 +7,7 @@ import {
     OneToOne,
 } from "typeorm";
 import Model from "./Model";
-import { Wallet } from "./wallet.entity";
+import { Wallet } from "./Wallet";
 import { Invitation } from "./Invitation";
 import { Transaction } from "./Transaction";
 

@@ -1,5 +1,5 @@
 import { Entity, Column, ManyToOne } from "typeorm";
-import { Wallet } from "./wallet.entity";
+import { Wallet } from "./Wallet";
 import Model from "./Model";
 import { User } from "./User";
 

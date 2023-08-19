@@ -1,5 +1,5 @@
 import { User } from "./User";
-import { Wallet } from "./wallet.entity";
+import { Wallet } from "./Wallet";
 import { Transaction } from "./Transaction";
 import { Invitation } from "./Invitation";
 
