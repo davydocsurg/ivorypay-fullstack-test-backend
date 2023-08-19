@@ -38,7 +38,7 @@ const AppDataSource = new DataSource({
     password: configuration.database.password,
     database: configuration.database.database,
     synchronize: true,
-    logging: true,
+    logging: false,
     entities: configuration.database.entities,
     migrations: configuration.database.migrations,
     subscribers: configuration.database.subscribers,

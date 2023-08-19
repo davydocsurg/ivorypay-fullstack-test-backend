@@ -3,13 +3,13 @@
     "target": "ESNext",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "module": "commonjs",
+    "module": "CommonJS",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "strictPropertyInitialization": false,
     "skipLibCheck": true,
     "outDir": "./build",
-    "rootDir": "."
+    "rootDir": ".",
   }
 }
