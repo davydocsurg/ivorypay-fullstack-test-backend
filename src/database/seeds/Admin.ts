@@ -3,16 +3,17 @@ import { encryptPassword } from "../../utils";
 import { User, RoleEnumType } from "../entities";
 
 const seedAdmin = async () => {
-    const userRepo = AppDataSource.getRepository(User);
+    const userRepo = AppDataSource.getTreeRepository(User);
+    // return logger.info(userRepo.findOneBy({ email: "hello@h.com" }));
     try {
         // Check if admin already exists
-        const existingAdmin = await userRepo.findOneBy({
-            email: "admin@ivorypay-test.com",
-        });
-        if (existingAdmin) {
-            logger.info("Admin user already exists.");
-            return;
-        }
+        // const existingAdmin = await userRepo.findOneBy({
+        //     email: "admin@ivorypay-test.com",
+        // });
+        // if (existingAdmin) {
+        //     logger.info("Admin user already exists.");
+        //     return;
+        // }
         const admin = {
             firstName: "Admin",
             lastName: "User",
@@ -20,9 +21,10 @@ const seedAdmin = async () => {
             password: await encryptPassword("Password1"),
             role: RoleEnumType.ADMIN,
         };
-        const res = userRepo.create(admin);
-        logger.info(res);
-        await userRepo.save(res);
+        logger.info(userRepo);
+        // const res = userRepo.save(admin);
+        // logger.info(res);
+        // await userRepo.save(res);
         logger.info("Admin user created.");
     } catch (error) {
         logger.error(error);

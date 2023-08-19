@@ -18,11 +18,11 @@ const configuration = {
         username: process.env.DATABASE_USERNAME,
         password: process.env.DATABASE_PASSWORD,
         database: process.env.DATABASE_NAME,
-        entities: ["src/database/entities/**/*.{ts,js}"],
-        migrations: ["src/database/migrations/**/*.ts"],
-        subscribers: ["src/database/subscribers/**/*.ts"],
+        entities: [__dirname + "/../database/entities/*{.ts,.js}"],
+        migrations: ["src/database/migrations/*{.ts,.js}"],
+        subscribers: ["src/database/subscribers/**/*{.ts,.js}"],
         cli: {
-            entitiesDir: "src/database/entities",
+            entitiesDir: [__dirname + "/../database/entities"],
             migrationsDir: "src/database/migrations",
             subscribersDir: "src/database/subscribers",
         },
@@ -40,8 +40,9 @@ const AppDataSource = new DataSource({
     synchronize: true,
     logging: true,
     entities: configuration.database.entities,
-    migrations: configuration.database.migrations,
-    subscribers: configuration.database.subscribers,
+    autoReconnect: true,
+    // migrations: configuration.database.migrations,
+    // subscribers: configuration.database.subscribers,
 });
 
 export default AppDataSource;
