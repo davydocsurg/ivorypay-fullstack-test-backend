@@ -7,7 +7,8 @@
         "test": "npm run test",
         "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
         "typeorm": "typeorm-ts-node-commonjs",
-        "migrate": "npx typeorm migration:generate -d ./src/config/dataSource.ts ./src/migrations/index"
+        "migrate": "npx typeorm migration:generate -d ./src/config/dataSource.ts ./src/migrations/index",
+        "seed": "npx ts-node src/database/seeds/Admin.ts"
     },
     "repository": {
         "type": "git",

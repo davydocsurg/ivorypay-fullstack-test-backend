@@ -35,7 +35,7 @@ export class User extends Model {
         enum: RoleEnumType,
         default: RoleEnumType.USER,
     })
-    role: RoleEnumType.USER;
+    role: RoleEnumType;
 
     @Column({ nullable: true, unique: true })
     referralCode: string;
