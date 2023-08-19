@@ -1,9 +1,9 @@
 import { Entity, Column, ManyToOne, OneToMany } from "typeorm";
 import { User } from "./User";
 import { Transaction } from "./Transaction";
-import Model from "./model";
+import Model from "./Model";
 
-@Entity()
+@Entity("wallets")
 export class Wallet extends Model {
     @ManyToOne(() => User, (user) => user.wallet)
     user: User;

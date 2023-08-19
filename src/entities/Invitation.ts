@@ -1,8 +1,8 @@
 import { Entity, Column, ManyToOne } from "typeorm";
 import { User } from "./User";
-import Model from "./model";
+import Model from "./Model";
 
-@Entity()
+@Entity("invitations")
 export class Invitation extends Model {
     @Column()
     email: string;

@@ -5,21 +5,18 @@ import {
     ManyToOne,
     OneToMany,
     OneToOne,
-    PrimaryGeneratedColumn,
 } from "typeorm";
-import Model from "./model";
-import { Wallet } from "./Wallet";
+import Model from "./Model";
+import { Wallet } from "./wallet.entity";
 import { Invitation } from "./Invitation";
 import { Transaction } from "./Transaction";
-// import { Wallet } from './Wallet';
-// import { Invitation } from './Invitation';
 
 export enum RoleEnumType {
     USER = "user",
     ADMIN = "admin",
 }
 
-@Entity()
+@Entity("users")
 export class User extends Model {
     @Column()
     firstName: string;

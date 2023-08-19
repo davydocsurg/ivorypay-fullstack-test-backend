@@ -6,7 +6,8 @@
     "scripts": {
         "test": "npm run test",
         "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-        "typeorm": "typeorm-ts-node-commonjs"
+        "typeorm": "typeorm-ts-node-commonjs",
+        "migrate": "npx typeorm migration:generate ./src/migrations/index -d ./src/utils/dataSource.ts"
     },
     "repository": {
         "type": "git",

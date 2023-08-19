@@ -1,6 +1,6 @@
 import { Entity, Column, ManyToOne } from "typeorm";
-import { Wallet } from "./Wallet";
-import Model from "./model";
+import { Wallet } from "./wallet.entity";
+import Model from "./Model";
 import { User } from "./User";
 
 export enum TransactionEnumType {
@@ -9,7 +9,7 @@ export enum TransactionEnumType {
     TRANSFER = "transfer",
 }
 
-@Entity()
+@Entity("transactions")
 export class Transaction extends Model {
     @ManyToOne(() => Wallet, (wallet) => wallet.outgoingTransactions)
     senderWallet: Wallet;
