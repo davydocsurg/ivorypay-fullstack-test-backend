@@ -18,7 +18,14 @@ const configuration = {
         username: process.env.DATABASE_USERNAME,
         password: process.env.DATABASE_PASSWORD,
         database: process.env.DATABASE_NAME,
-        entities: [__dirname + "/../**/*.entity{.ts,.js}"], // TODO: Fix this
+        entities: ["src/entities/**/*.ts"],
+        migrations: ["src/migrations/**/*.ts"],
+        subscribers: ["src/subscribers/**/*.ts"],
+        cli: {
+            entitiesDir: "src/entities",
+            migrationsDir: "src/migrations",
+            subscribersDir: "src/subscribers",
+        },
     },
     jwtSecret: process.env.JWT_SECRET,
 };
@@ -30,8 +37,11 @@ const AppDataSource = new DataSource({
     username: configuration.database.username,
     password: configuration.database.password,
     database: configuration.database.database,
-    entities: configuration.database.entities,
     synchronize: true,
+    logging: false,
+    entities: configuration.database.entities,
+    migrations: configuration.database.migrations,
+    subscribers: configuration.database.subscribers,
 });
 
 export default AppDataSource;

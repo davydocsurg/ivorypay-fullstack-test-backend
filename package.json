@@ -5,7 +5,9 @@
     "main": "src/index.ts",
     "scripts": {
         "test": "npm run test",
-        "dev": "ts-node-dev --respawn --transpile-only src/index.ts"
+        "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+        "typeorm": "typeorm-ts-node-commonjs",
+        "migrate": "npx typeorm migration:generate -d ./src/config/dataSource.ts ./src/migrations/index"
     },
     "repository": {
         "type": "git",
@@ -48,7 +50,6 @@
         "@types/joi": "^17.2.3",
         "@types/jsonwebtoken": "^9.0.2",
         "@types/pg": "^8.10.2",
-        "@types/typescript": "^2.0.0",
         "@types/winston": "^2.4.4",
         "ts-jest": "^29.1.1",
         "typescript": "^5.1.6"
