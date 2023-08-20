@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import { DataSource } from "typeorm";
+import "reflect-metadata";
 
 dotenv.config();
 const databasePortEnv = process.env.DATABASE_PORT;
@@ -18,14 +19,14 @@ const configuration = {
         username: process.env.DATABASE_USERNAME,
         password: process.env.DATABASE_PASSWORD,
         database: process.env.DATABASE_NAME,
-        entities: [__dirname + "/../database/entities/*{.ts,.js}"],
+        entities: ["src/database/entities/*{.ts,.js}"],
         migrations: ["src/database/migrations/*{.ts,.js}"],
         subscribers: ["src/database/subscribers/**/*{.ts,.js}"],
-        cli: {
-            entitiesDir: [__dirname + "/../database/entities"],
-            migrationsDir: "src/database/migrations",
-            subscribersDir: "src/database/subscribers",
-        },
+        // cli: {
+        //     entitiesDir: ["/../database/entities"],
+        //     migrationsDir: "src/database/migrations",
+        //     subscribersDir: "src/database/subscribers",
+        // },
     },
     jwtSecret: process.env.JWT_SECRET,
 };
@@ -37,12 +38,11 @@ const AppDataSource = new DataSource({
     username: configuration.database.username,
     password: configuration.database.password,
     database: configuration.database.database,
-    synchronize: true,
-    logging: true,
+    synchronize: false,
+    logging: false,
     entities: configuration.database.entities,
-    autoReconnect: true,
-    // migrations: configuration.database.migrations,
-    // subscribers: configuration.database.subscribers,
+    migrations: configuration.database.migrations,
+    subscribers: configuration.database.subscribers,
 });
 
 export default AppDataSource;

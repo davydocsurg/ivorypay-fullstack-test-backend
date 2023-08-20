@@ -1,4 +1,4 @@
-import { AppDataSource, logger } from "../../config";
+import { AppDataSource, logger } from "../../../config";
 import { encryptPassword } from "../../utils";
 import { User, RoleEnumType } from "../entities";
 
@@ -22,9 +22,9 @@ const seedAdmin = async () => {
             role: RoleEnumType.ADMIN,
         };
         logger.info(userRepo);
-        // const res = userRepo.save(admin);
-        // logger.info(res);
-        // await userRepo.save(res);
+        const res = userRepo.create(admin);
+        logger.info(res);
+        await userRepo.save(res);
         logger.info("Admin user created.");
     } catch (error) {
         logger.error(error);
