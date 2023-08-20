@@ -1,9 +1,9 @@
-import { AppDataSource, logger } from "../../../config";
-import { encryptPassword } from "../../utils";
+import { logger } from "../../../config";
+import { encryptPassword, AppDataSource } from "../../utils";
 import { User, RoleEnumType } from "../entities";
 
+const userRepo = AppDataSource.getRepository(User);
 const seedAdmin = async () => {
-    const userRepo = AppDataSource.getTreeRepository(User);
     // return logger.info(userRepo.findOneBy({ email: "hello@h.com" }));
     try {
         // Check if admin already exists

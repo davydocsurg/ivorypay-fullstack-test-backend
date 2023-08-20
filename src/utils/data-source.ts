@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
-import { DataSource } from "typeorm";
 import "reflect-metadata";
+import { DataSource } from "typeorm";
 
 dotenv.config();
 const databasePortEnv = process.env.DATABASE_PORT;
@@ -22,16 +22,11 @@ const configuration = {
         entities: ["src/database/entities/*{.ts,.js}"],
         migrations: ["src/database/migrations/*{.ts,.js}"],
         subscribers: ["src/database/subscribers/**/*{.ts,.js}"],
-        // cli: {
-        //     entitiesDir: ["/../database/entities"],
-        //     migrationsDir: "src/database/migrations",
-        //     subscribersDir: "src/database/subscribers",
-        // },
     },
     jwtSecret: process.env.JWT_SECRET,
 };
 
-const AppDataSource = new DataSource({
+export const AppDataSource = new DataSource({
     type: configuration.database.type,
     host: configuration.database.host,
     port: configuration.database.port,
@@ -44,5 +39,3 @@ const AppDataSource = new DataSource({
     migrations: configuration.database.migrations,
     subscribers: configuration.database.subscribers,
 });
-
-export default AppDataSource;

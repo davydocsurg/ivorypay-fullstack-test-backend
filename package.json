@@ -4,12 +4,12 @@
     "description": "IvoryPay FullStack Test - Wallet App Backend",
     "main": "src/index.ts",
     "scripts": {
-        "test": "npm run test",
+        "test": "jest -i --watch",
         "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
         "build": "rm -rf build && tsc -p .",
         "typeorm": "typeorm-ts-node-commonjs",
-        "migrate": "npm run build && npm run typeorm migration:generate -d ./src/config/data-source.ts ./src/database/migrations/added-user-entity",
-        "seed": "npm run build && npx ts-node src/database/seeds/Admin.ts"
+        "migrate": "yarn build && yarn typeorm migration:generate -d src/utils/data-source.ts src/database/migrations/added-user-entity",
+        "seed": "yarn build && yarn ts-node src/database/seeds/Admin.ts"
     },
     "repository": {
         "type": "git",
@@ -33,6 +33,7 @@
     "homepage": "https://github.com/davydocsurg/ivorypay-fullstack-test-backend#readme",
     "dependencies": {
         "bcryptjs": "^2.4.3",
+        "config": "^3.3.9",
         "cors": "^2.8.5",
         "dotenv": "^16.3.1",
         "express": "^4.18.2",
@@ -40,6 +41,7 @@
         "jsonwebtoken": "^9.0.1",
         "morgan": "^1.10.0",
         "pg": "^8.11.3",
+        "reflect-metadata": "^0.1.13",
         "ts-node": "^10.9.1",
         "ts-node-dev": "^2.0.0",
         "typeorm": "^0.3.17",
@@ -47,6 +49,7 @@
     },
     "devDependencies": {
         "@types/bcryptjs": "^2.4.2",
+        "@types/config": "^3.3.0",
         "@types/cors": "^2.8.13",
         "@types/dotenv": "^8.2.0",
         "@types/express": "^4.17.17",
@@ -54,6 +57,7 @@
         "@types/jsonwebtoken": "^9.0.2",
         "@types/morgan": "^1.9.4",
         "@types/pg": "^8.10.2",
+        "@types/reflect-metadata": "^0.1.0",
         "@types/winston": "^2.4.4",
         "ts-jest": "^29.1.1",
         "typescript": "^5.1.6"
