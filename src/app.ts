@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { config, errorHandler, successHandler } from "../config";
+import { config, errorHandler, successHandler } from "./config";
 
 const app = express();
 

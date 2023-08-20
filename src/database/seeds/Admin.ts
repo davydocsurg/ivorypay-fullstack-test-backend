@@ -1,5 +1,5 @@
-import { logger } from "../../../config";
-import { encryptPassword, AppDataSource } from "../../utils";
+import { logger, AppDataSource } from "../../config";
+import { encryptPassword } from "../../utils";
 import { User, RoleEnumType } from "../entities";
 
 const userRepo = AppDataSource.getRepository(User);

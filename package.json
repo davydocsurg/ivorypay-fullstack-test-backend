@@ -8,7 +8,7 @@
         "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
         "build": "rm -rf build && tsc -p .",
         "typeorm": "typeorm-ts-node-commonjs",
-        "migrate": "yarn build && yarn typeorm migration:generate -d src/utils/data-source.ts src/database/migrations/added-user-entity",
+        "migrate": "yarn build && yarn typeorm migration:generate -d src/config/data-source.ts src/database/migrations/added-user-entity",
         "seed": "yarn build && yarn ts-node src/database/seeds/Admin.ts"
     },
     "repository": {
