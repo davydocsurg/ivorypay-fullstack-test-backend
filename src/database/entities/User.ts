@@ -1,6 +1,7 @@
 import {
     Column,
     Entity,
+    Index,
     JoinColumn,
     ManyToOne,
     OneToMany,
@@ -16,7 +17,7 @@ export enum RoleEnumType {
     ADMIN = "admin",
 }
 
-@Entity("users")
+@Entity()
 export class User extends Model {
     @Column()
     firstName: string;
@@ -24,6 +25,7 @@ export class User extends Model {
     @Column()
     lastName: string;
 
+    @Index("email_index")
     @Column({ unique: true })
     email: string;
 
@@ -35,7 +37,7 @@ export class User extends Model {
         enum: RoleEnumType,
         default: RoleEnumType.USER,
     })
-    role: RoleEnumType.USER;
+    role: RoleEnumType;
 
     @Column({ nullable: true, unique: true })
     referralCode: string;

@@ -9,9 +9,9 @@ export default abstract class Model extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ type: "timestamp" })
     createdAt: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ type: "timestamp" })
     updatedAt: Date;
 }
