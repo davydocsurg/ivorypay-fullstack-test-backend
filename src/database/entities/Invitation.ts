@@ -7,13 +7,10 @@ export class Invitation extends Model {
     @Column()
     email: string;
 
-    @Column()
-    token: string;
-
     @Column({ default: false })
     accepted: boolean;
 
-    @ManyToOne(() => User, (user) => user.invitations)
+    @ManyToOne(() => User, (user) => user.referrals)
     invitedUser: User;
 
     @ManyToOne(() => User, (user) => user.invitedUsers) // New field for inviter

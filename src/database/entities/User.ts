@@ -42,9 +42,6 @@ export class User extends Model {
     @Column({ nullable: true, unique: true })
     referralCode: string;
 
-    @Column({ nullable: true, unique: true })
-    invitationCode: string; // New field for invitation code
-
     // Establish a bidirectional relationship with referred users
     @OneToMany(() => User, (user) => user.referredBy)
     referredUsers: User[];
@@ -54,7 +51,7 @@ export class User extends Model {
     wallet: Wallet[];
 
     @OneToMany(() => Invitation, (invitation) => invitation.invitedUser)
-    invitations: Invitation[];
+    referrals: Invitation[];
 
     // Establish a relationship with transactions
     @OneToMany(() => Transaction, (transaction) => transaction.user)

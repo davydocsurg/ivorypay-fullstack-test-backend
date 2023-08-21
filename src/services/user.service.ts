@@ -1,9 +1,10 @@
 import httpStatus from "http-status";
 import { AppDataSource } from "../config";
-import { User } from "../database/entities";
+import { Invitation, User } from "../database/entities";
 import { ApiError } from "../utils";
 
 const userRepo = AppDataSource.getRepository(User);
+const inviteRepo = AppDataSource.getRepository(Invitation);
 
 /**
  * Create a user
@@ -46,11 +47,27 @@ const getUserByEmail = async <Key extends keyof User>(
  * Verify invitation code
  * @param {string} invitationCode
  */
-const verifyInvitationCode = async (invitationCode: string) => {
+const verifyReferralCode = async (referralCode: string) => {
     const user = await userRepo.findOne({
-        where: { invitationCode },
+        where: { referralCode },
     });
     return !!user;
 };
 
-export default { createUser, getUserByEmail, verifyInvitationCode };
+/**
+ * Create an invitation
+ * @param {string} email
+ * @param {string} token
+ * @param {string} inviterId
+ * @returns {Promise<Invitation>}
+ */
+const createInvitation = async (data: Partial<Invitation>) => {
+    return await inviteRepo.save(inviteRepo.create(data));
+};
+
+export default {
+    createUser,
+    getUserByEmail,
+    verifyReferralCode,
+    createInvitation,
+};

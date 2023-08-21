@@ -1,5 +1,5 @@
 import { logger, AppDataSource } from "../../config";
-import { encryptPassword } from "../../utils";
+import { encryptPassword, generateReferralCode } from "../../utils";
 import { User, RoleEnumType } from "../entities";
 
 AppDataSource.initialize().then(() => {
@@ -20,6 +20,7 @@ AppDataSource.initialize().then(() => {
                 email: "admin@ivorypay-test.com",
                 password: await encryptPassword("Password1"),
                 role: RoleEnumType.ADMIN,
+                referralCode: generateReferralCode(),
             };
             const res = userRepo.create(admin);
             await userRepo.save(res);
@@ -28,5 +29,5 @@ AppDataSource.initialize().then(() => {
             logger.error(error);
         }
     };
-    seedAdmin().catch((error) => logger.error(error));
+    seedAdmin();
 });
