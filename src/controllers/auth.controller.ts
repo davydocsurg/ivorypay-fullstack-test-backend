@@ -8,8 +8,9 @@ import {
     exclude,
     generateReferralCode,
 } from "../utils";
+import { AuthRequest } from "../types";
 
-const register = catchAsync(async (req: Request, res: Response) => {
+const register = catchAsync(async (req: AuthRequest, res: Response) => {
     const { email, password, firstName, lastName } = req.body;
     const { referralCode } = req.query;
 
@@ -32,9 +33,11 @@ const register = catchAsync(async (req: Request, res: Response) => {
         lastName,
         referralCode: generateReferralCode(),
     });
-    // await userService.createInvitation({
-    //     email: user.email,
-    //     referralCode: user.referralCode,
+    await userService.createInvitation({
+        email: user.email,
+        inviter: req.user,
+    });
+
     const userWithoutPassword = exclude(user, [
         "password",
         "createdAt",
@@ -43,11 +46,13 @@ const register = catchAsync(async (req: Request, res: Response) => {
     res.status(httpStatus.CREATED).send(userWithoutPassword);
 });
 
-const login = catchAsync(async (req: Request, res: Response) => {
+const login = catchAsync(async (req: AuthRequest, res: Response) => {
     const { email, password } = req.body;
     const user = await authService.loginWithEmailAndPassword(email, password);
     const token = authService.createSendToken(user, res);
-    res.send({ user, token });
+    req.user = user;
+    const userWithoutPassword = exclude(user, ["password"]);
+    res.send({ user: userWithoutPassword, token });
 });
 
 export default { register, login };

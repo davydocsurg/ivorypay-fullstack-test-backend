@@ -18,35 +18,8 @@ const loginWithEmailAndPassword = async (
     email: string,
     password: string
     // omit password, createdAt, updatedAt
-): Promise<
-    Omit<
-        User,
-        | "password"
-        | "save"
-        | "remove"
-        | "softRemove"
-        | "recover"
-        | "hasId"
-        | "reload"
-    >
-> => {
-    const user = await userService.getUserByEmail(email, [
-        "id",
-        "email",
-        "password",
-        "role",
-        "firstName",
-        "lastName",
-        "referralCode",
-        "createdAt",
-        "updatedAt",
-        "invitedBy",
-        "referredUsers",
-        "referredBy",
-        "referrals",
-        "wallet",
-        "transactions",
-    ]);
+): Promise<User> => {
+    const user = await userService.getUserByEmail(email);
 
     if (!user || !(await isPasswordMatch(password, user.password as string))) {
         throw new ApiError(
@@ -54,7 +27,7 @@ const loginWithEmailAndPassword = async (
             "Incorrect email or password"
         );
     }
-    return exclude(user, ["password"]);
+    return user;
 };
 
 const signToken = (id: string, type: string) => {

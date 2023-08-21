@@ -42,6 +42,9 @@ export class User extends Model {
     @Column({ nullable: true, unique: true })
     referralCode: string;
 
+    @Column({ type: "timestamp", nullable: true })
+    passwordChangedAt: Date | null;
+
     // Establish a bidirectional relationship with referred users
     @OneToMany(() => User, (user) => user.referredBy)
     referredUsers: User[];

@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
 import { Request, Response, NextFunction } from "express-serve-static-core";
+import { AuthRequest } from "../types";
 
 export interface CustomParamsDictionary {
     [key: string]: any;
@@ -7,22 +8,26 @@ export interface CustomParamsDictionary {
 
 const catchAsync =
     (
-        fn: RequestHandler<
-            CustomParamsDictionary,
-            any,
-            any,
-            qs.ParsedQs,
-            Record<string, any>
-        >
+        fn:
+            | RequestHandler<
+                  CustomParamsDictionary,
+                  any,
+                  any,
+                  qs.ParsedQs,
+                  Record<string, any>
+              >
+            | any
     ) =>
     (
-        req: Request<
-            CustomParamsDictionary,
-            any,
-            any,
-            any,
-            Record<string, any>
-        >,
+        req:
+            | Request<
+                  CustomParamsDictionary,
+                  any,
+                  any,
+                  any,
+                  Record<string, any>
+              >
+            | AuthRequest,
         res: Response<any, Record<string, any>, number>,
         next: NextFunction
     ) => {
