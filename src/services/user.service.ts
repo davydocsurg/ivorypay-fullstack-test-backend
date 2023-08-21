@@ -1,7 +1,7 @@
 import { AppDataSource } from "../config";
 import { User } from "../database/entities";
 
-const userRepository = AppDataSource.getRepository(User);
+const userRepo = AppDataSource.getRepository(User);
 
 /**
  * Create a user
@@ -9,7 +9,32 @@ const userRepository = AppDataSource.getRepository(User);
  * @returns Promise<User>
  */
 const createUser = async (data: Partial<User>) => {
-    return await userRepository.save(userRepository.create(data));
+    return await userRepo.save(userRepo.create(data));
 };
 
-export { createUser };
+/**
+ * Get user by email
+ * @param {string} email
+ * @param {Array<Key>} keys
+ * @returns {Promise<Pick<User, Key> | null>}
+ */
+const getUserByEmail = async <Key extends keyof User>(
+    email: string,
+    keys: Key[] = [
+        "id",
+        "email",
+        "firstName",
+        "lastName",
+        "password",
+        "role",
+        "createdAt",
+        "updatedAt",
+    ] as Key[]
+): Promise<Pick<User, Key> | null> => {
+    return userRepo.findOne({
+        where: { email },
+        select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {}),
+    }) as Promise<Pick<User, Key> | null>;
+};
+
+export { createUser, getUserByEmail };

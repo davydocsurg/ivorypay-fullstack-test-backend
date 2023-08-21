@@ -4,7 +4,6 @@ import { User, RoleEnumType } from "../entities";
 
 AppDataSource.initialize().then(() => {
     const seedAdmin = async () => {
-        // return logger.info(userRepo.findOneBy({ email: "hello@h.com" }));
         try {
             const userRepo = AppDataSource.getRepository(User);
             // Check if admin already exists

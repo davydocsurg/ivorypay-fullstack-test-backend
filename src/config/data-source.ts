@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import {
-    cli,
     database,
     entities,
     host,
