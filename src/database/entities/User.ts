@@ -17,7 +17,7 @@ export enum RoleEnumType {
     ADMIN = "admin",
 }
 
-@Entity()
+@Entity("users")
 export class User extends Model {
     @Column()
     firstName: string;
