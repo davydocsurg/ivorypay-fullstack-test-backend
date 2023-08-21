@@ -9,7 +9,9 @@
         "build": "rm -rf build && tsc -p .",
         "typeorm": "typeorm-ts-node-commonjs",
         "migrate": "yarn build && yarn typeorm migration:generate -d src/config/data-source.ts src/database/migrations/added-user-entity",
-        "seed": "yarn build && yarn ts-node src/database/seeds/Admin.ts"
+        "seed": "yarn build && yarn ts-node src/database/seeds/Admin.ts",
+        "db:drop": "yarn build && yarn typeorm schema:drop -- -d src/config/data-source.ts",
+        "db:sync": "yarn build && yarn typeorm schema:sync -- -d src/config/data-source.ts"
     },
     "repository": {
         "type": "git",

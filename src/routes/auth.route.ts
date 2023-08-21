@@ -6,9 +6,10 @@ import { authValidation } from "../validations";
 const authRoute = express.Router();
 
 authRoute.post(
-    "/register",
+    "/register?:referralCode",
     validate(authValidation.register),
     authController.register
 );
+authRoute.post("/login", validate(authValidation.login), authController.login);
 
 export default authRoute;

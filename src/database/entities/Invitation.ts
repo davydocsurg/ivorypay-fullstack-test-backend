@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne } from "typeorm";
+import { Entity, Column, ManyToOne, OneToOne } from "typeorm";
 import { User } from "./User";
 import Model from "./Model";
 
@@ -11,8 +11,8 @@ export class Invitation extends Model {
     accepted: boolean;
 
     @ManyToOne(() => User, (user) => user.referrals)
-    invitedUser: User;
+    invitee: User;
 
-    @ManyToOne(() => User, (user) => user.invitedUsers) // New field for inviter
+    @OneToOne(() => User, (user) => user.invitedBy) // New field for inviter
     inviter: User; // User who sent the invitation
 }

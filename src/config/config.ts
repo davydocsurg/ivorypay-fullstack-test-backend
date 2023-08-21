@@ -43,6 +43,12 @@ if (error) {
     throw new Error(`Config validation error: ${error.message}`);
 }
 
+const cookieOptions = {
+    expires: new Date(Date.now() + parseInt("90", 10) * 24 * 60 * 60 * 1000),
+    secure: false,
+    httpOnly: true,
+};
+
 export default {
     env: envVars.NODE_ENV,
     port: envVars.PORT,
@@ -55,6 +61,7 @@ export default {
         verifyEmailExpirationMinutes:
             envVars.JWT_VERIFY_EMAIL_EXPIRATION_MINUTES,
     },
+    cookieOptions,
     email: {
         host: envVars.SMTP_HOST,
         port: envVars.SMTP_PORT,

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
-import { userService } from "../services";
+import { authService, userService } from "../services";
 import {
     ApiError,
     catchAsync,
@@ -13,12 +13,16 @@ const register = catchAsync(async (req: Request, res: Response) => {
     const { email, password, firstName, lastName } = req.body;
     const { referralCode } = req.query;
 
+    if (!referralCode) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Referral code is required");
+    }
+
     // verify invitation code
     const validReferralCode = await userService.verifyReferralCode(
         referralCode as string
     );
     if (!validReferralCode) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid invitation code");
+        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid referral code");
     }
 
     const user = await userService.createUser({
@@ -39,4 +43,11 @@ const register = catchAsync(async (req: Request, res: Response) => {
     res.status(httpStatus.CREATED).send(userWithoutPassword);
 });
 
-export default { register };
+const login = catchAsync(async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+    const user = await authService.loginWithEmailAndPassword(email, password);
+    const token = authService.createSendToken(user, res);
+    res.send({ user, token });
+});
+
+export default { register, login };

@@ -50,7 +50,7 @@ export class User extends Model {
     @JoinColumn()
     wallet: Wallet[];
 
-    @OneToMany(() => Invitation, (invitation) => invitation.invitedUser)
+    @OneToMany(() => Invitation, (invitation) => invitation.invitee)
     referrals: Invitation[];
 
     // Establish a relationship with transactions
@@ -61,11 +61,6 @@ export class User extends Model {
     @ManyToOne(() => User, (user) => user.referredUsers)
     referredBy: User; // User who referred this user (if any)
 
-    @ManyToOne(() => User, (user) => user.invitedUsers)
-    @JoinColumn()
+    @OneToOne(() => Invitation, (invitation) => invitation.inviter)
     invitedBy: User; // User who sent the invitation
-
-    // Establish a bidirectional relationship with referred users
-    @OneToMany(() => User, (user) => user.invitedBy)
-    invitedUsers: User[];
 }
