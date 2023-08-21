@@ -1,3 +1,4 @@
 import { gErrorHandler, errorConverter } from "./error";
+import validate from "./validate";
 
-export { gErrorHandler, errorConverter };
+export { gErrorHandler, errorConverter, validate };

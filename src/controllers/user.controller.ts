@@ -14,4 +14,4 @@ const register = async (req: Request, res: Response) => {
     res.status(httpStatus.CREATED).send(user);
 };
 
-export { register };
+export default { register };
