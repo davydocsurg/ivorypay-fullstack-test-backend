@@ -42,4 +42,15 @@ const getUserByEmail = async <Key extends keyof User>(
     }) as Promise<Pick<User, Key> | null>;
 };
 
-export { createUser, getUserByEmail };
+/**
+ * Verify invitation code
+ * @param {string} invitationCode
+ */
+const verifyInvitationCode = async (invitationCode: string) => {
+    const user = await userRepo.findOne({
+        where: { invitationCode },
+    });
+    return !!user;
+};
+
+export default { createUser, getUserByEmail, verifyInvitationCode };

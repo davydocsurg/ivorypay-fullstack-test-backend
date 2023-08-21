@@ -15,4 +15,7 @@ export class Invitation extends Model {
 
     @ManyToOne(() => User, (user) => user.invitations)
     invitedUser: User;
+
+    @ManyToOne(() => User, (user) => user.invitedUsers) // New field for inviter
+    inviter: User; // User who sent the invitation
 }

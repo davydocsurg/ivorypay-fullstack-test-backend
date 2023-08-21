@@ -1,3 +1,1 @@
-import { createUser } from "./user.service";
-
-export { createUser };
+export { default as userService } from "./user.service";
