@@ -1,5 +1,7 @@
+import httpStatus from "http-status";
 import { AppDataSource } from "../config";
 import { User } from "../database/entities";
+import { ApiError } from "../utils";
 
 const userRepo = AppDataSource.getRepository(User);
 
@@ -9,6 +11,9 @@ const userRepo = AppDataSource.getRepository(User);
  * @returns Promise<User>
  */
 const createUser = async (data: Partial<User>) => {
+    if (await getUserByEmail(data.email!)) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Email already taken");
+    }
     return await userRepo.save(userRepo.create(data));
 };
 
