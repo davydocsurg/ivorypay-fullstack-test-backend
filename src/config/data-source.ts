@@ -19,7 +19,7 @@ const configuration = {
         username: process.env.DATABASE_USERNAME,
         password: process.env.DATABASE_PASSWORD,
         database: process.env.DATABASE_NAME,
-        entities: ["src/database/entities/*{.ts,.js}"],
+        entities: [__dirname + "src/database/entities/*{.ts,.js}"],
         migrations: ["src/database/migrations/*{.ts,.js}"],
         subscribers: ["src/database/subscribers/**/*{.ts,.js}"],
     },
