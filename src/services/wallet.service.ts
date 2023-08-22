@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import httpStatus from "http-status";
+import BigDecimal from "js-big-decimal";
 import { AppDataSource, logger } from "../config";
 import {
     Transaction,
@@ -43,21 +44,22 @@ const createWallet = async (user: User) => {
  * @returns {Promise<Wallet>}
  */
 const depositFunds = async (user: User, amount: number) => {
-    const wallet = await walletRepo.findOneBy({ user: { id: user.id } });
+    const wallet = await walletRepo.findOne({
+        where: { user: { id: user.id } },
+    });
     if (!wallet) {
         throw new ApiError(httpStatus.NOT_FOUND, "User does not have a wallet");
     }
 
-    wallet.balance += amount;
+    const newWallet = await updateWalletBalance(wallet, amount, "add");
 
-    await walletRepo.save(wallet);
+    const sanitizedWallet = {
+        id: newWallet.id,
+        balance: newWallet.balance,
+        address: newWallet.address,
+    };
 
-    return createAndSaveTransaction(
-        user,
-        wallet,
-        amount,
-        TransactionEnumType.DEPOSIT
-    );
+    return sanitizedWallet;
 };
 
 /**
@@ -109,6 +111,36 @@ const createAndSaveTransaction = async (
  */
 const generateWalletAddress = () => {
     return uuidv4().replace(/-/g, "");
+};
+
+/**
+ * Update a wallet's balance
+ * @param {Wallet} wallet
+ * @param {number} amount
+ * @param {string<'add' | 'subtract'>} type
+ * @returns {Promise<Wallet>}
+ */
+const updateWalletBalance = async (
+    wallet: Wallet,
+    amount: number,
+    type: "add" | "subtract"
+) => {
+    // Use BigDecimal for precise arithmetic calculations
+    const walletBalance = new BigDecimal(wallet.balance.toString());
+    const depositAmount = new BigDecimal(amount.toString());
+    let newWalletBalance: BigDecimal;
+
+    if (type === "add") {
+        newWalletBalance = walletBalance.add(depositAmount);
+    } else if (type === "subtract") {
+        if (walletBalance.compareTo(depositAmount) < 0) {
+            throw new ApiError(httpStatus.BAD_REQUEST, "Insufficient funds");
+        }
+        newWalletBalance = walletBalance.subtract(depositAmount);
+    }
+    wallet.balance = parseFloat(newWalletBalance!.getValue());
+
+    return await walletRepo.save(wallet);
 };
 
 /**

@@ -4,7 +4,6 @@ import { depositAmount } from "./custom.validation";
 const deposit = {
     body: Joi.object().keys({
         amount: Joi.number().required().custom(depositAmount),
-        email: Joi.string().email().required(),
     }),
 };
 

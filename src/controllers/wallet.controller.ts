@@ -15,10 +15,10 @@ const createWallet = catchAsync(async (req: AuthRequest, res: Response) => {
 });
 
 const depositFunds = catchAsync(async (req: AuthRequest, res: Response) => {
-    const { amount, email } = req.body;
+    const { amount } = req.body;
 
     // Check if user exists
-    const user = await userService.getUserByEmail(email);
+    const user = await userService.getUserByEmail(req.user.email);
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, "User not found");
     }
