@@ -1,7 +1,7 @@
 import httpStatus from "http-status";
-import { AppDataSource, logger } from "../config";
+import { AppDataSource, config, logger } from "../config";
 import { Invitation, User } from "../database/entities";
-import { ApiError } from "../utils";
+import { ApiError, NodeMailerConfig } from "../utils";
 
 const userRepo = AppDataSource.getRepository(User);
 const inviteRepo = AppDataSource.getRepository(Invitation);
@@ -160,7 +160,6 @@ const createInvitation = async (data: Partial<Invitation>) => {
  * Check if user is active before login
  * @param {string} email
  * @returns {Promise<boolean>}
- * @param {Array<Key>} keys
  * @returns {Promise<Pick<User, Key> | null>}
  */
 const checkUserIsActive = async (email: string) => {
@@ -174,6 +173,39 @@ const checkUserIsActive = async (email: string) => {
     return user.isActive;
 };
 
+/**
+ * Send invitations to potential users via email
+ * @param {string} senderEmail - Auth user's email
+ * @param {string[]} emails - Array of user email addresses
+ * @param {string} referralCode - Referral code to include in the registration link
+ */
+const sendInvitations = async (
+    name: string,
+    senderEmail: string,
+    emails: string,
+    referralCode: string
+) => {
+    const referralLink = `${config.baseUrl}/register?${referralCode}`;
+    const uniqueEmails = new Set<string>();
+
+    for (const email of emails) {
+        if (!uniqueEmails.has(email)) {
+            uniqueEmails.add(email);
+            const mailOptions = {
+                from:
+                    config.env === config.DEVELOPMENT
+                        ? { name, email: senderEmail }
+                        : senderEmail,
+                to: config.env === config.DEVELOPMENT ? [{ email }] : email,
+                subject: "Invitation to Join Our IvoryPayTest",
+                text: `You're invited to join our platform, IvoryPayTest! Sign up using this referral link: ${referralLink}`,
+            };
+            const mailRes = await NodeMailerConfig(mailOptions);
+            return mailRes;
+        }
+    }
+};
+
 export default {
     createUser,
     getUserByEmail,
@@ -183,4 +215,5 @@ export default {
     disableUser,
     enableUser,
     checkUserIsActive,
+    sendInvitations,
 };

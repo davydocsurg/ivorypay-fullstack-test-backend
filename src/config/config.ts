@@ -54,10 +54,18 @@ const mailTrapOptions = {
     port: process.env.MAIL_PORT,
     username: process.env.MAIL_USERNAME,
     password: process.env.MAIL_PASSWORD,
-    secure: true,
+    secure: false,
 };
 
+const baseUrl =
+    process.env.NODE_ENV === "development"
+        ? "http://" + process.env.APP_HOST + ":" + process.env.APP_PORT
+        : "https://host.com";
+
 const systemMail = "noreply@ivorypay-test.com";
+
+const DEVELOPMENT = "development";
+const PRODUCTION = "production";
 
 export default {
     env: envVars.NODE_ENV,
@@ -84,5 +92,8 @@ export default {
         debug: true,
         from: envVars.EMAIL_FROM,
     },
+    baseUrl,
     mailTrapOptions,
+    DEVELOPMENT,
+    PRODUCTION,
 };

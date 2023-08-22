@@ -1,5 +1,5 @@
 type EmailConfig = {
-    from: string;
+    from: string | Object;
     to: string;
     subject: string;
     html?: string;

@@ -1,30 +1,26 @@
-import nodemailer from "nodemailer";
+import nodemailer, { Transporter, SendMailOptions } from "nodemailer";
 import sendinblueTransport from "nodemailer-sendinblue-transport";
+import { MailtrapClient } from "mailtrap";
 import httpStatus from "http-status";
-import { EmailConfig } from "../types";
 import ApiError from "./ApiError";
-import { config } from "../config";
+import { config, logger } from "../config";
 
 const apiKey = process.env.SENDINBLUE_API_KEY;
+const mailtrapToken = process.env.MAILTRAP_TOKEN as string;
 
-const { password, port, smtp, username, secure } = config.mailTrapOptions;
-const devOptions = {
-    smtp,
-    port,
-    secure,
-    auth: {
-        user: username,
-        pass: password,
-    },
-};
-
-let transporter = nodemailer.createTransport(
-    process.env.NODE_ENV === "development"
-        ? devOptions
-        : new sendinblueTransport({
-              apiKey,
-          })
-);
+let mTransporter: any;
+let transporter: Transporter;
+if (config.env === config.DEVELOPMENT) {
+    mTransporter = new MailtrapClient({
+        token: mailtrapToken,
+    });
+} else {
+    transporter = nodemailer.createTransport(
+        new sendinblueTransport({
+            apiKey,
+        })
+    );
+}
 
 const NodeMailerConfig = async ({
     from,
@@ -32,7 +28,7 @@ const NodeMailerConfig = async ({
     subject,
     text,
     html,
-}: EmailConfig) => {
+}: SendMailOptions | any) => {
     const mailOptions = {
         from,
         to,
@@ -42,7 +38,10 @@ const NodeMailerConfig = async ({
     };
 
     try {
-        const info = transporter.sendMail(mailOptions);
+        const info =
+            config.env === config.DEVELOPMENT
+                ? mTransporter.send(mailOptions)
+                : transporter.sendMail(mailOptions);
         return info;
     } catch (error) {
         throw new ApiError(
