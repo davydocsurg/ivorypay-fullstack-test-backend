@@ -49,6 +49,14 @@ const cookieOptions = {
     httpOnly: true,
 };
 
+const mailTrapOptions = {
+    smtp: process.env.MAIL_HOST,
+    port: process.env.MAIL_PORT,
+    username: process.env.MAIL_USERNAME,
+    password: process.env.MAIL_PASSWORD,
+    secure: true,
+};
+
 const systemMail = "noreply@ivorypay-test.com";
 
 export default {
@@ -76,4 +84,5 @@ export default {
         debug: true,
         from: envVars.EMAIL_FROM,
     },
+    mailTrapOptions,
 };

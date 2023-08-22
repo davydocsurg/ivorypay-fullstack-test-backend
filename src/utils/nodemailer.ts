@@ -3,12 +3,27 @@ import sendinblueTransport from "nodemailer-sendinblue-transport";
 import httpStatus from "http-status";
 import { EmailConfig } from "../types";
 import ApiError from "./ApiError";
+import { config } from "../config";
 
 const apiKey = process.env.SENDINBLUE_API_KEY;
+
+const { password, port, smtp, username, secure } = config.mailTrapOptions;
+const devOptions = {
+    smtp,
+    port,
+    secure,
+    auth: {
+        user: username,
+        pass: password,
+    },
+};
+
 let transporter = nodemailer.createTransport(
-    new sendinblueTransport({
-        apiKey,
-    })
+    process.env.NODE_ENV === "development"
+        ? devOptions
+        : new sendinblueTransport({
+              apiKey,
+          })
 );
 
 const NodeMailerConfig = async ({
