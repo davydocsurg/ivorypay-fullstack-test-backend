@@ -11,6 +11,7 @@ import Model from "./Model";
 import { Wallet } from "./Wallet";
 import { Invitation } from "./Invitation";
 import { Transaction } from "./Transaction";
+import { Otp } from "./Otp";
 
 export enum RoleEnumType {
     USER = "user",
@@ -44,6 +45,24 @@ export class User extends Model {
 
     @Column({ type: "timestamp", nullable: true })
     passwordChangedAt: Date | null;
+
+    @Column({ nullable: true, default: "unverified" })
+    verificationStatus: string;
+
+    @Column({ nullable: true, type: "timestamp" })
+    verifiedAt: Date | null;
+
+    @Column({ nullable: true })
+    verificationToken: string;
+
+    @Column({ nullable: true })
+    resetPasswordToken: string;
+
+    @Column({ nullable: true, type: "timestamp" })
+    resetPasswordExpires: Date | null;
+
+    @OneToMany(() => Otp, (otp) => otp.email)
+    otp: Otp[];
 
     // Establish a bidirectional relationship with referred users
     @OneToMany(() => User, (user) => user.referredBy)

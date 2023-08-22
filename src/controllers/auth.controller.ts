@@ -9,6 +9,7 @@ import {
     generateReferralCode,
 } from "../utils";
 import { AuthRequest } from "../types";
+import { logger } from "../config";
 
 const register = catchAsync(async (req: AuthRequest, res: Response) => {
     const { email, password, firstName, lastName } = req.body;
@@ -55,4 +56,8 @@ const login = catchAsync(async (req: AuthRequest, res: Response) => {
     res.send({ user: userWithoutPassword, token });
 });
 
-export default { register, login };
+const testA = catchAsync(async (req: AuthRequest, res: Response) => {
+    logger.info("testA");
+});
+
+export default { register, login, testA };
