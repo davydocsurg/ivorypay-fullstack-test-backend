@@ -16,5 +16,10 @@ walletRoute.post(
     [isAuthenticated, validate(walletValidation.transfer), checkWallet],
     walletController.transferFunds
 );
+walletRoute.post(
+    "/withdraw",
+    [isAuthenticated, validate(walletValidation.withdraw), checkWallet],
+    walletController.withdrawFunds
+);
 
 export default walletRoute;

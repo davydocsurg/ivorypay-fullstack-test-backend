@@ -71,8 +71,17 @@ const transferFunds = catchAsync(async (req: AuthRequest, res: Response) => {
     res.send({ wallet });
 });
 
+const withdrawFunds = catchAsync(async (req: AuthRequest, res: Response) => {
+    const { amount } = req.body;
+    const user = req.user;
+
+    const wallet = await walletService.withdrawFunds(user, amount);
+    res.send({ wallet });
+});
+
 export default {
     createWallet,
     depositFunds,
     transferFunds,
+    withdrawFunds,
 };

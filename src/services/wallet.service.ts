@@ -58,9 +58,9 @@ const depositFunds = async (user: User, amount: number) => {
     const newWallet = await updateWalletBalance(wallet, amount, "add");
 
     const sanitizedWallet = {
-        id: newWallet.id,
-        balance: newWallet.balance,
-        address: newWallet.address,
+        id: newWallet!.id,
+        balance: newWallet!.balance,
+        address: newWallet!.address,
     };
 
     return sanitizedWallet;
@@ -69,7 +69,7 @@ const depositFunds = async (user: User, amount: number) => {
 /**
  * Transfer funds from one wallet to another
  * @param {User} user
- * @param {string} receiverAddress
+ * @param {Wallet} recipientWallet
  * @param {number} amount
  * @returns {Promise<Wallet>}
  */
@@ -93,16 +93,33 @@ const transferFunds = async (
         "add"
     );
 
+    // Create transaction
+    const transaction = await createAndSaveTransaction(
+        user,
+        amount,
+        TransactionEnumType.TRANSFER,
+        wallet,
+        recipientWallet
+    );
+
+    const sanitizedTransaction = {
+        id: transaction.id,
+        amount: transaction.amount,
+        type: transaction.type,
+        createdAt: transaction.createdAt,
+    };
     const sanitizedWallet = {
         id: newWallet!.id,
         balance: newWallet!.balance,
         address: newWallet!.address,
+        transaction: sanitizedTransaction,
     };
 
     const sanitizedReceiverWallet = {
         id: newReceiverWallet!.id,
         balance: newReceiverWallet!.balance,
         address: newReceiverWallet!.address,
+        transaction: sanitizedTransaction,
     };
 
     return {
@@ -113,18 +130,18 @@ const transferFunds = async (
 
 /**
  * Withdraw funds from a wallet
- * @param {EntityManager} entityManager
  * @param {User} user
  * @param {number} amount
  * @returns {Promise<Wallet>}
  */
-const transactionalOperation = async (
-    entityManager: EntityManager,
-    fn: () => Promise<any>
-): Promise<any> => {
-    logger.info("Starting transaction..." + entityManager);
-    const transactionalEntityManager = entityManager.transaction(fn);
-    return await transactionalEntityManager;
+const withdrawFunds = async (user: User, amount: number) => {
+    const wallet = await getWalletByUserId(user.id);
+    if (!wallet) {
+        throw new ApiError(httpStatus.NOT_FOUND, "User does not have a wallet");
+    }
+
+    const newWallet = await updateWalletBalance(wallet, amount, "subtract");
+    return newWallet;
 };
 
 /**
@@ -139,17 +156,17 @@ const transactionalOperation = async (
  */
 const createAndSaveTransaction = async (
     user: User,
-    wallet: Wallet,
     amount: number,
     type: TransactionEnumType,
-    otherWallet?: Wallet
+    senderWallet: Wallet,
+    receiverWallet: Wallet
 ): Promise<Transaction> => {
     const transaction = new Transaction();
     transaction.amount = amount;
     transaction.type = type;
     transaction.user = user;
-    transaction.senderWallet = wallet;
-    transaction.receiverWallet = otherWallet || wallet;
+    transaction.senderWallet = senderWallet;
+    transaction.receiverWallet = receiverWallet;
 
     return transactionRepo.save(transaction);
 };
@@ -226,4 +243,5 @@ export default {
     generateWalletAddress,
     getWalletByAddress,
     getWalletByUserId,
+    withdrawFunds,
 };
