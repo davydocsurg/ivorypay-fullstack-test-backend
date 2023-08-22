@@ -1,19 +1,27 @@
-import nodemailer, { Transporter, SendMailOptions } from "nodemailer";
+import nodemailer, {
+    Transporter,
+    SendMailOptions,
+    TransportOptions,
+} from "nodemailer";
 import sendinblueTransport from "nodemailer-sendinblue-transport";
-import { MailtrapClient } from "mailtrap";
 import httpStatus from "http-status";
 import ApiError from "./ApiError";
 import { config, logger } from "../config";
 
 const apiKey = process.env.SENDINBLUE_API_KEY;
-const mailtrapToken = process.env.MAILTRAP_TOKEN as string;
 
-let mTransporter: any;
 let transporter: Transporter;
+const { pass, port, host, user } = config.mailTrapOptions;
+const devOptions = {
+    host,
+    port,
+    auth: {
+        user,
+        pass,
+    },
+};
 if (config.env === config.DEVELOPMENT) {
-    mTransporter = new MailtrapClient({
-        token: mailtrapToken,
-    });
+    transporter = nodemailer.createTransport(devOptions as TransportOptions);
 } else {
     transporter = nodemailer.createTransport(
         new sendinblueTransport({
@@ -28,7 +36,7 @@ const NodeMailerConfig = async ({
     subject,
     text,
     html,
-}: SendMailOptions | any) => {
+}: SendMailOptions) => {
     const mailOptions = {
         from,
         to,
@@ -40,14 +48,11 @@ const NodeMailerConfig = async ({
     try {
         const info =
             config.env === config.DEVELOPMENT
-                ? mTransporter.send(mailOptions)
+                ? transporter.sendMail(mailOptions)
                 : transporter.sendMail(mailOptions);
         return info;
-    } catch (error) {
-        throw new ApiError(
-            httpStatus.INTERNAL_SERVER_ERROR,
-            "Email not sent. Check your connection and try again"
-        );
+    } catch (error: any) {
+        throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error);
     }
 };
 

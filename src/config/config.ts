@@ -50,10 +50,10 @@ const cookieOptions = {
 };
 
 const mailTrapOptions = {
-    smtp: process.env.MAIL_HOST,
+    host: process.env.MAIL_HOST,
     port: process.env.MAIL_PORT,
-    username: process.env.MAIL_USERNAME,
-    password: process.env.MAIL_PASSWORD,
+    user: process.env.MAIL_USERNAME,
+    pass: process.env.MAIL_PASSWORD,
     secure: false,
 };
 

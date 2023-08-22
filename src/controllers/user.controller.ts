@@ -7,7 +7,7 @@ const sendInvitations = catchAsync(async (req: AuthRequest, res: Response) => {
     const { emails } = req.body;
     const { firstName, lastName, email, referralCode } = req.user;
     const name = firstName + " " + lastName;
-    const mailRes = await userService.sendInvitations(
+    const message = await userService.sendInvitations(
         name,
         email,
         emails,
@@ -15,8 +15,7 @@ const sendInvitations = catchAsync(async (req: AuthRequest, res: Response) => {
     );
 
     res.send({
-        mailRes,
-        message: "Invitations sent successfully!",
+        message,
     });
 });
 

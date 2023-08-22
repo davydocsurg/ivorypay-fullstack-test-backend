@@ -182,7 +182,7 @@ const checkUserIsActive = async (email: string) => {
 const sendInvitations = async (
     name: string,
     senderEmail: string,
-    emails: string,
+    emails: string[],
     referralCode: string
 ) => {
     const referralLink = `${config.baseUrl}/register?${referralCode}`;
@@ -191,19 +191,29 @@ const sendInvitations = async (
     for (const email of emails) {
         if (!uniqueEmails.has(email)) {
             uniqueEmails.add(email);
+
             const mailOptions = {
-                from:
-                    config.env === config.DEVELOPMENT
-                        ? { name, email: senderEmail }
-                        : senderEmail,
-                to: config.env === config.DEVELOPMENT ? [{ email }] : email,
-                subject: "Invitation to Join Our IvoryPayTest",
-                text: `You're invited to join our platform, IvoryPayTest! Sign up using this referral link: ${referralLink}`,
+                from: {
+                    name,
+                    address: senderEmail,
+                },
+                to: email,
+                subject: "Invitation to Join IvoryPayTest",
+                html: `
+                    <h2>You're Invited to Join IvoryPayTest!</h2>
+                    <p>Hello there,</p>
+                    <p>You've been invited to join IvoryPayTest, a platform that offers amazing services.</p>
+                    <p>Sign up using this referral link to get started:</p>
+                    <a href="${referralLink}">${referralLink}</a>
+                    <p>We can't wait to have you on board!</p>
+                    <p>Best regards,</p>
+                    <p>${name}</p>
+                `,
             };
-            const mailRes = await NodeMailerConfig(mailOptions);
-            return mailRes;
+            await NodeMailerConfig(mailOptions);
         }
     }
+    return "Invitations sent successfully";
 };
 
 export default {
