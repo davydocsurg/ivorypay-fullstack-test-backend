@@ -6,7 +6,7 @@ import { authValidation } from "../validations";
 const authRoute = express.Router();
 
 authRoute.post(
-    "/register?:referralCode", // optionally include role
+    "/register",
     validate(authValidation.register),
     authController.register
 );

@@ -10,11 +10,11 @@ import {
 } from "../utils";
 import { AuthRequest } from "../types";
 import { logger } from "../config";
-import { User } from "../database/entities";
+import { RoleEnumType, User } from "../database/entities";
 
 const register = catchAsync(async (req: AuthRequest, res: Response) => {
     const { email, password, firstName, lastName } = req.body;
-    const { referralCode } = req.query;
+    const { referralCode, role } = req.query;
 
     // Validate referral code and get referrer
     const referrer = await validateAndRetrieveReferrer(referralCode as string);
@@ -25,7 +25,8 @@ const register = catchAsync(async (req: AuthRequest, res: Response) => {
         password,
         firstName,
         lastName,
-        referrer
+        referrer,
+        role as RoleEnumType
     );
 
     // Create invitation and update referrer's referredUsers
@@ -61,7 +62,8 @@ async function createUserWithEmailAndPassword(
     password: string,
     firstName: string,
     lastName: string,
-    referredBy?: User
+    referredBy: User,
+    role?: RoleEnumType
 ): Promise<User> {
     const encryptedPassword = await encryptPassword(password);
 
@@ -72,6 +74,7 @@ async function createUserWithEmailAndPassword(
         lastName,
         referralCode: generateReferralCode(),
         referredBy,
+        role,
     });
 }
 
