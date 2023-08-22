@@ -92,6 +92,7 @@ const getUserById = async <Key extends keyof User>(
         "lastName",
         "password",
         "role",
+        "wallet",
         "createdAt",
         "updatedAt",
         "isActive",
@@ -121,6 +122,7 @@ const getUserByEmail = async <Key extends keyof User>(
         "password",
         "role",
         "isActive",
+        "wallet",
         "createdAt",
         "updatedAt",
     ] as Key[]

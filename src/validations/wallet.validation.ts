@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { depositAmount } from "./custom.validation";
+import { depositAmount, withdrawAmount } from "./custom.validation";
 
 const deposit = {
     body: Joi.object().keys({
@@ -9,13 +9,13 @@ const deposit = {
 
 const withdraw = {
     body: Joi.object().keys({
-        amount: Joi.number().required().custom(depositAmount),
+        amount: Joi.number().required().custom(withdrawAmount),
     }),
 };
 
 const transfer = {
     body: Joi.object().keys({
-        amount: Joi.number().required().custom(depositAmount),
+        amount: Joi.number().required().custom(withdrawAmount),
         recipientEmail: Joi.string().email().required(),
     }),
 };

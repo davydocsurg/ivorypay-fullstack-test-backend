@@ -1,6 +1,6 @@
 import { Response } from "express";
 import httpStatus from "http-status";
-import { authService, userService } from "../services";
+import { authService, userService, walletService } from "../services";
 import {
     ApiError,
     catchAsync,
@@ -31,6 +31,9 @@ const register = catchAsync(async (req: AuthRequest, res: Response) => {
 
     // Create invitation and update referrer's referredUsers
     // await createInvitationAndUpdateReferrer(referrer, user);
+
+    // Create wallet
+    await walletService.createWallet(user);
 
     // Prepare response
     const userWithoutPassword = exclude(user, [

@@ -18,3 +18,12 @@ export const depositAmount: Joi.CustomValidator<number> = (value, helpers) => {
     }
     return value;
 };
+
+export const withdrawAmount: Joi.CustomValidator<number> = (value, helpers) => {
+    if (value <= 5) {
+        return helpers.error(
+            "withdraw amount must be equal to or greater than $5"
+        );
+    }
+    return value;
+};

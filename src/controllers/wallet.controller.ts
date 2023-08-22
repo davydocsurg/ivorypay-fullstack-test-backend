@@ -3,7 +3,6 @@ import httpStatus from "http-status";
 import { userService, walletService } from "../services";
 import { AuthRequest } from "../types";
 import { ApiError, catchAsync } from "../utils";
-import { EntityManager } from "typeorm";
 import { AppDataSource, logger } from "../config";
 import { User } from "../database/entities";
 
@@ -36,8 +35,8 @@ const transferFunds = catchAsync(async (req: AuthRequest, res: Response) => {
     const senderWallet = sender.wallet;
 
     // Check if user exists
-    const user = await userService.getUserByEmail(sender.email);
-    if (!user) {
+    const authUser = await userService.getUserByEmail(sender.email);
+    if (!authUser) {
         throw new ApiError(httpStatus.NOT_FOUND, "User not found");
     }
 
@@ -47,7 +46,14 @@ const transferFunds = catchAsync(async (req: AuthRequest, res: Response) => {
         throw new ApiError(httpStatus.NOT_FOUND, "Recipient does not exist");
     }
 
-    logger.warn("Re: " + recipient.wallet);
+    // Get recipient's wallet address using recipient's id
+    const recipientWallet = await walletService.getWalletByUserId(recipient.id);
+    if (!recipientWallet) {
+        throw new ApiError(
+            httpStatus.NOT_FOUND,
+            "Recipient does not have a wallet"
+        );
+    }
 
     // Check if recipient is the same as sender
     if (sender.email === recipientEmail) {
@@ -56,10 +62,9 @@ const transferFunds = catchAsync(async (req: AuthRequest, res: Response) => {
             "You cannot transfer funds to yourself. Deposit funds instead."
         );
     }
-
     const wallet = await walletService.transferFunds(
-        user,
-        recipient.wallet.address,
+        authUser,
+        recipientWallet,
         amount
     );
 

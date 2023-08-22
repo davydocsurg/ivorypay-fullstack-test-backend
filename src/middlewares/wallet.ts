@@ -16,8 +16,17 @@ const checkWallet = catchAsync(
             const recipient = await userRepository.findOneBy({
                 email: req.body.recipientEmail,
             });
-            // const recipientWallet = await findUserWallet(recipient!.id);
-            if (!recipient?.wallet.address) {
+
+            if (!recipient) {
+                return next(
+                    new ApiError(
+                        httpStatus.NOT_FOUND,
+                        "Recipient does not exist"
+                    )
+                );
+            }
+            const recipientWallet = await findUserWallet(recipient!.id);
+            if (!recipientWallet) {
                 return next(
                     new ApiError(
                         httpStatus.NOT_FOUND,

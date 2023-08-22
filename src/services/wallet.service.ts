@@ -26,7 +26,6 @@ const createWallet = async (user: User) => {
         user.wallet?.address!,
         user.id
     );
-    logger.info("Existing wallet: " + existingWallet?.address);
     if (existingWallet) {
         throw new ApiError(httpStatus.BAD_REQUEST, "You already have a wallet");
     }
@@ -51,9 +50,7 @@ const createWallet = async (user: User) => {
  * @returns {Promise<Wallet>}
  */
 const depositFunds = async (user: User, amount: number) => {
-    const wallet = await walletRepo.findOne({
-        where: { user: { id: user.id } },
-    });
+    const wallet = await getWalletByUserId(user.id);
     if (!wallet) {
         throw new ApiError(httpStatus.NOT_FOUND, "User does not have a wallet");
     }
@@ -78,41 +75,34 @@ const depositFunds = async (user: User, amount: number) => {
  */
 const transferFunds = async (
     user: User,
-    receiverAddress: string,
+    recipientWallet: Wallet,
     amount: number
 ) => {
-    const wallet = await walletRepo.findOne({
-        where: { user: { id: user.id } },
-    });
+    const wallet = await getWalletByUserId(user.id);
     if (!wallet) {
         throw new ApiError(httpStatus.NOT_FOUND, "User does not have a wallet");
     }
 
-    const receiverWallet = await getWalletByAddress(receiverAddress, user.id);
-    if (!receiverWallet) {
-        throw new ApiError(
-            httpStatus.NOT_FOUND,
-            "Receiver does not have a wallet"
-        );
-    }
-
+    // Deduct amount from sender's wallet
     const newWallet = await updateWalletBalance(wallet, amount, "subtract");
+
+    // And add to receiver's wallet
     const newReceiverWallet = await updateWalletBalance(
-        receiverWallet,
+        recipientWallet,
         amount,
         "add"
     );
 
     const sanitizedWallet = {
-        id: newWallet.id,
-        balance: newWallet.balance,
-        address: newWallet.address,
+        id: newWallet!.id,
+        balance: newWallet!.balance,
+        address: newWallet!.address,
     };
 
     const sanitizedReceiverWallet = {
-        id: newReceiverWallet.id,
-        balance: newReceiverWallet.balance,
-        address: newReceiverWallet.address,
+        id: newReceiverWallet!.id,
+        balance: newReceiverWallet!.balance,
+        address: newReceiverWallet!.address,
     };
 
     return {
@@ -180,26 +170,30 @@ const generateWalletAddress = () => {
  * @returns {Promise<Wallet>}
  */
 const updateWalletBalance = async (
-    wallet: Wallet,
+    userWallet: Wallet,
     amount: number,
     type: "add" | "subtract"
-) => {
+): Promise<Wallet | null> => {
     // Use BigDecimal for precise arithmetic calculations
-    const walletBalance = new BigDecimal(wallet.balance.toString());
-    const depositAmount = new BigDecimal(amount.toString());
+    const walletBalance = new BigDecimal(userWallet!.balance.toString());
+    const operationAmount = new BigDecimal(amount.toString());
     let newWalletBalance: BigDecimal;
 
     if (type === "add") {
-        newWalletBalance = walletBalance.add(depositAmount);
+        newWalletBalance = walletBalance.add(operationAmount);
+        userWallet.balance = parseFloat(newWalletBalance!.getValue());
+
+        return await walletRepo.save(userWallet);
     } else if (type === "subtract") {
-        if (walletBalance.compareTo(depositAmount) < 0) {
+        if (walletBalance.compareTo(operationAmount) < 0) {
             throw new ApiError(httpStatus.BAD_REQUEST, "Insufficient funds");
         }
-        newWalletBalance = walletBalance.subtract(depositAmount);
-    }
-    wallet.balance = parseFloat(newWalletBalance!.getValue());
+        newWalletBalance = walletBalance.subtract(operationAmount);
+        userWallet.balance = parseFloat(newWalletBalance!.getValue());
 
-    return await walletRepo.save(wallet);
+        return await walletRepo.save(userWallet);
+    }
+    return null;
 };
 
 /**
@@ -214,10 +208,22 @@ const getWalletByAddress = async (address: string, userId: string) => {
     });
 };
 
+/**
+ * Fetch a wallet by user id
+ * @param {string} userId
+ * @returns {Promise<Wallet | null>}
+ */
+const getWalletByUserId = async (userId: string) => {
+    return await walletRepo.findOne({
+        where: { user: { id: userId } },
+    });
+};
+
 export default {
     createWallet,
     depositFunds,
     transferFunds,
     generateWalletAddress,
     getWalletByAddress,
+    getWalletByUserId,
 };
