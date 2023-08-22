@@ -73,7 +73,7 @@ export class User extends Model {
 
     @OneToOne(() => Wallet)
     @JoinColumn()
-    wallet: Wallet[];
+    wallet: Wallet;
 
     @OneToMany(() => Invitation, (invitation) => invitation.invitee)
     referrals: Invitation[];
