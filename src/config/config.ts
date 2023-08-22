@@ -49,6 +49,8 @@ const cookieOptions = {
     httpOnly: true,
 };
 
+const systemMail = "noreply@ivorypay-test.com";
+
 export default {
     env: envVars.NODE_ENV,
     port: envVars.PORT,
@@ -62,6 +64,7 @@ export default {
             envVars.JWT_VERIFY_EMAIL_EXPIRATION_MINUTES,
     },
     cookieOptions,
+    systemMail,
     email: {
         host: envVars.SMTP_HOST,
         port: envVars.SMTP_PORT,

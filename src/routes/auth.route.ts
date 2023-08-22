@@ -11,6 +11,6 @@ authRoute.post(
     authController.register
 );
 authRoute.post("/login", validate(authValidation.login), authController.login);
-authRoute.get("/test-auth", auth, authController.testA);
+authRoute.get("/l", auth, authController.testA);
 
 export default authRoute;
