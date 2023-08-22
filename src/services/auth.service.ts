@@ -27,6 +27,15 @@ const loginWithEmailAndPassword = async (
             "Incorrect email or password"
         );
     }
+
+    // check if user is disabled
+    if (!user.isActive) {
+        throw new ApiError(
+            httpStatus.UNAUTHORIZED,
+            "Your account is disabled. Please contact support."
+        );
+    }
+
     return user;
 };
 

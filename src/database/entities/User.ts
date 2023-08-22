@@ -61,6 +61,9 @@ export class User extends Model {
     @Column({ nullable: true, type: "timestamp" })
     resetPasswordExpires: Date | null;
 
+    @Column({ default: true })
+    isActive: boolean;
+
     @OneToMany(() => Otp, (otp) => otp.email)
     otp: Otp[];
 

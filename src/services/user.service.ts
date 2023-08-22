@@ -19,6 +19,91 @@ const createUser = async (data: Partial<User>) => {
 };
 
 /**
+ * Fetch all users
+ * @returns {Promise<User[]>}
+ * @param {Array<Key>} keys
+ * @returns {Promise<Pick<User, Key>[]>}
+ */
+const fetchUsers = async <Key extends keyof User>(
+    keys: Key[] = [
+        "id",
+        "email",
+        "firstName",
+        "lastName",
+        "password",
+        "role",
+        "createdAt",
+        "updatedAt",
+    ] as Key[]
+): Promise<Pick<User, Key>[]> => {
+    return userRepo.find({
+        select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {}),
+    }) as Promise<Pick<User, Key>[]>;
+};
+
+/**
+ * Disable a user
+ * @param {string} id
+ * @returns {Promise<User>}
+ * @param {Array<Key>} keys
+ * @returns {Promise<Pick<User, Key> | null>}
+ */
+const disableUser = async <Key extends keyof User>(
+    id: string,
+    keys: Key[] = [
+        "id",
+        "email",
+        "firstName",
+        "lastName",
+        "password",
+        "role",
+        "createdAt",
+        "updatedAt",
+    ] as Key[]
+): Promise<Pick<User, Key> | null> => {
+    const user = await userRepo.findOne({
+        where: { id },
+        select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {}),
+    });
+    if (!user) {
+        throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+    }
+    user.isActive = false;
+    return await userRepo.save(user);
+};
+
+/**
+ * Enable a user
+ * @param {string} id
+ * @returns {Promise<User>}
+ * @param {Array<Key>} keys
+ * @returns {Promise<Pick<User, Key> | null>}
+ */
+const enableUser = async <Key extends keyof User>(
+    id: string,
+    keys: Key[] = [
+        "id",
+        "email",
+        "firstName",
+        "lastName",
+        "password",
+        "role",
+        "createdAt",
+        "updatedAt",
+    ] as Key[]
+): Promise<Pick<User, Key> | null> => {
+    const user = await userRepo.findOne({
+        where: { id },
+        select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {}),
+    });
+    if (!user) {
+        throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+    }
+    user.isActive = true;
+    return await userRepo.save(user);
+};
+
+/**
  * Get user by email
  * @param {string} email
  * @param {Array<Key>} keys
@@ -65,9 +150,31 @@ const createInvitation = async (data: Partial<Invitation>) => {
     return await inviteRepo.save(inviteRepo.create(data));
 };
 
+/**
+ * Check if user is active before login
+ * @param {string} email
+ * @returns {Promise<boolean>}
+ * @param {Array<Key>} keys
+ * @returns {Promise<Pick<User, Key> | null>}
+ */
+const checkUserIsActive = async (email: string) => {
+    const user = await userRepo.findOne({
+        where: { email },
+        select: ["isActive"],
+    });
+    if (!user) {
+        throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+    }
+    return user.isActive;
+};
+
 export default {
     createUser,
     getUserByEmail,
     verifyReferralCode,
     createInvitation,
+    fetchUsers,
+    disableUser,
+    enableUser,
+    checkUserIsActive,
 };
