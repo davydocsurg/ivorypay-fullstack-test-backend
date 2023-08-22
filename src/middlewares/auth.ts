@@ -89,4 +89,5 @@ const passwordWasChanged = async (
 
     return false; // User did not recently change password
 };
+
 export default isAuthenticated;

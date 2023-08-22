@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
 import { userService } from "../../services";
 import { catchAsync } from "../../utils";
+import { AuthRequest } from "../../types";
 
-const fetchUsers = catchAsync(async (req: Request, res: Response) => {
+const fetchUsers = catchAsync(async (req: AuthRequest, res: Response) => {
     const users = await userService.fetchUsers();
-    res.send(users);
+    res.send({ users });
 });
 
 const disableUser = catchAsync(async (req: Request, res: Response) => {

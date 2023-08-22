@@ -1,5 +1,6 @@
 import { gErrorHandler, errorConverter } from "./error";
 import validate from "./validate";
-import auth from "./auth";
+import isAuthenticated from "./auth";
+import isAdmin from "./admin";
 
-export { gErrorHandler, errorConverter, validate, auth };
+export { gErrorHandler, errorConverter, validate, isAuthenticated, isAdmin };

@@ -1,6 +1,6 @@
 import httpStatus from "http-status";
 import jwt from "jsonwebtoken";
-import { AppDataSource, config } from "../config";
+import { AppDataSource, config, logger } from "../config";
 import { User } from "../database/entities";
 import { ApiError, exclude, isPasswordMatch } from "../utils";
 import userService from "./user.service";
