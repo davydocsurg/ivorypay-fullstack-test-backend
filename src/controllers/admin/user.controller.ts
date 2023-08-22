@@ -20,8 +20,28 @@ const enableUser = catchAsync(async (req: Request, res: Response) => {
     res.send({ user });
 });
 
+const sendAdminInvitations = catchAsync(
+    async (req: AuthRequest, res: Response) => {
+        const { emails, role } = req.body;
+        const { firstName, lastName, email, referralCode } = req.user;
+        const name = firstName + " " + lastName;
+        const message = await userService.sendInvitations(
+            name,
+            email,
+            emails,
+            referralCode,
+            role
+        );
+
+        res.send({
+            message,
+        });
+    }
+);
+
 export default {
     fetchUsers,
     disableUser,
     enableUser,
+    sendAdminInvitations,
 };

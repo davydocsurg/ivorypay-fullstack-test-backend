@@ -52,7 +52,8 @@ const deleteUser = {
 
 const invitationEmails = {
     body: Joi.object().keys({
-        emails: Joi.array().required(),
+        emails: Joi.array().items(Joi.string().email()).required(),
+        role: Joi.string().optional(),
     }),
 };
 

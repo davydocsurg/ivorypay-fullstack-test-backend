@@ -178,14 +178,18 @@ const checkUserIsActive = async (email: string) => {
  * @param {string} senderEmail - Auth user's email
  * @param {string[]} emails - Array of user email addresses
  * @param {string} referralCode - Referral code to include in the registration link
+ * @param {string|null} role - User should be an admin
  */
 const sendInvitations = async (
     name: string,
     senderEmail: string,
     emails: string[],
-    referralCode: string
+    referralCode: string,
+    role?: string
 ) => {
-    const referralLink = `${config.baseUrl}/register?${referralCode}`;
+    const referralLink = role
+        ? `${config.baseUrl}/register?referral-code=${referralCode}?role=${role}`
+        : `${config.baseUrl}/register?referral-code=${referralCode}`;
     const uniqueEmails = new Set<string>();
 
     for (const email of emails) {
@@ -200,14 +204,18 @@ const sendInvitations = async (
                 to: email,
                 subject: "Invitation to Join IvoryPayTest",
                 html: `
-                    <h2>You're Invited to Join IvoryPayTest!</h2>
+                    <h2>You're Invited to Join IvoryPayTest${
+                        role !== null && " as an Admin"
+                    }!</h2>
                     <p>Hello there,</p>
-                    <p>You've been invited to join IvoryPayTest, a platform that offers amazing services.</p>
+                    <p>You've been invited to join IvoryPayTest${
+                        role !== null && " as an admin"
+                    }, a platform that offers amazing services.</p>
                     <p>Sign up using this referral link to get started:</p>
                     <a href="${referralLink}">${referralLink}</a>
                     <p>We can't wait to have you on board!</p>
                     <p>Best regards,</p>
-                    <p>${name}</p>
+                    <p>${name}.</p>
                 `,
             };
             await NodeMailerConfig(mailOptions);
@@ -215,6 +223,13 @@ const sendInvitations = async (
     }
     return "Invitations sent successfully";
 };
+
+/**
+ * Send Admin invitations
+ * @param {string} senderEmail - Auth user's email
+ * @param {string[]} emails - Array of user email addresses
+ * @param {string} referralCode - Referral code to include in the registration link
+ */
 
 export default {
     createUser,

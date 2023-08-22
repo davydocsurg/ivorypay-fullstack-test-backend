@@ -1,7 +1,7 @@
 import express from "express";
 import { isAdmin, isAuthenticated, validate } from "../middlewares";
 import { adminController } from "../controllers";
-import { authValidation } from "../validations";
+import { authValidation, userValidation } from "../validations";
 
 const adminRoute = express.Router();
 
@@ -19,6 +19,11 @@ adminRoute.patch(
     "/users/enable",
     [isAuthenticated, isAdmin, validate(authValidation.findUser)],
     adminController.enableUser
+);
+adminRoute.post(
+    "/users/invitation",
+    [isAuthenticated, isAdmin, validate(userValidation.invitationEmails)],
+    adminController.sendAdminInvitations
 );
 
 export default adminRoute;
