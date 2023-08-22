@@ -7,7 +7,7 @@ const adminRoute = express.Router();
 
 adminRoute.get(
     "/users",
-    [isAuthenticated, isAdmin, validate(authValidation.findUser)],
+    [isAuthenticated, isAdmin],
     adminController.fetchUsers
 );
 adminRoute.patch(
