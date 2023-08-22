@@ -17,7 +17,7 @@ adminRoute.patch(
 );
 adminRoute.patch(
     "/users/enable",
-    [isAuthenticated, isAdmin],
+    [isAuthenticated, isAdmin, validate(authValidation.findUser)],
     adminController.enableUser
 );
 
