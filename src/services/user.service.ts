@@ -101,9 +101,6 @@ const getUserById = async <Key extends keyof User>(
         where: { id },
         select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {}),
     }) as Promise<Pick<User, Key> | null>;
-    if (!user) {
-        throw new ApiError(httpStatus.NOT_FOUND, "User not found");
-    }
 
     return user;
 };
@@ -147,9 +144,7 @@ const verifyReferralCode = async (referralCode: string) => {
 
 /**
  * Create an invitation
- * @param {string} email
- * @param {string} token
- * @param {string} inviterId
+ * @param {Partial<Invitation>} data
  * @returns {Promise<Invitation>}
  */
 const createInvitation = async (data: Partial<Invitation>) => {
@@ -225,11 +220,46 @@ const sendInvitations = async (
 };
 
 /**
- * Send Admin invitations
- * @param {string} senderEmail - Auth user's email
- * @param {string[]} emails - Array of user email addresses
- * @param {string} referralCode - Referral code to include in the registration link
+ * Update user
+ * @param {string} id
+ * @param {Partial<User>} data
+ * @returns {Promise<User>}
  */
+const updateUser = async (id: string, data: Partial<User>) => {
+    const user = await getUserById(id);
+    if (!user) {
+        throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+    }
+    logger.info(user);
+
+    Object.assign(user, data);
+    return await userRepo.save(user);
+};
+
+/**
+ * Get user by referral code
+ * @param {string} referralCode
+ * @param {Array<Key>} keys
+ * @returns {Promise<Pick<User, Key> | null>}
+ */
+const getUserByReferralCode = async <Key extends keyof User>(
+    referralCode: string,
+    keys: Key[] = [
+        "id",
+        "email",
+        "firstName",
+        "lastName",
+        "password",
+        "role",
+        "createdAt",
+        "updatedAt",
+    ] as Key[]
+): Promise<Pick<User, Key> | null> => {
+    return userRepo.findOne({
+        where: { referralCode },
+        select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {}),
+    }) as Promise<Pick<User, Key> | null>;
+};
 
 export default {
     createUser,
@@ -241,4 +271,7 @@ export default {
     enableUser,
     checkUserIsActive,
     sendInvitations,
+    updateUser,
+    getUserById,
+    getUserByReferralCode,
 };

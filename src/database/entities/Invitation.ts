@@ -5,7 +5,7 @@ import Model from "./Model";
 @Entity("invitations")
 export class Invitation extends Model {
     @Column()
-    email: string;
+    email: string; // Email of the invitee
 
     @Column({ default: false })
     accepted: boolean;

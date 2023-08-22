@@ -10,42 +10,84 @@ import {
 } from "../utils";
 import { AuthRequest } from "../types";
 import { logger } from "../config";
+import { User } from "../database/entities";
 
 const register = catchAsync(async (req: AuthRequest, res: Response) => {
     const { email, password, firstName, lastName } = req.body;
     const { referralCode } = req.query;
 
-    if (!referralCode) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "Referral code is required");
-    }
+    // Validate referral code and get referrer
+    const referrer = await validateAndRetrieveReferrer(referralCode as string);
 
-    // verify invitation code
-    const validReferralCode = await userService.verifyReferralCode(
-        referralCode as string
-    );
-    if (!validReferralCode) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid referral code");
-    }
-
-    const user = await userService.createUser({
+    // Create user
+    const user = await createUserWithEmailAndPassword(
         email,
-        password: await encryptPassword(password),
+        password,
         firstName,
         lastName,
-        referralCode: generateReferralCode(),
-    });
-    await userService.createInvitation({
-        email: user.email,
-        inviter: req.user,
-    });
+        referrer
+    );
 
+    // Create invitation and update referrer's referredUsers
+    // await createInvitationAndUpdateReferrer(referrer, user);
+
+    // Prepare response
     const userWithoutPassword = exclude(user, [
         "password",
         "createdAt",
         "updatedAt",
     ]);
+
     res.status(httpStatus.CREATED).send(userWithoutPassword);
 });
+
+async function validateAndRetrieveReferrer(
+    referralCode: string
+): Promise<User> {
+    if (!referralCode) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Referral code is required");
+    }
+
+    const referrer = await userService.getUserByReferralCode(referralCode);
+    if (!referrer) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid referral code");
+    }
+
+    return referrer;
+}
+
+async function createUserWithEmailAndPassword(
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+    referredBy?: User
+): Promise<User> {
+    const encryptedPassword = await encryptPassword(password);
+
+    return userService.createUser({
+        email,
+        password: encryptedPassword,
+        firstName,
+        lastName,
+        referralCode: generateReferralCode(),
+        referredBy,
+    });
+}
+
+async function createInvitationAndUpdateReferrer(referrer: User, user: User) {
+    const invitation = await userService.createInvitation({
+        email: user.email,
+        inviter: referrer,
+        invitee: user,
+        accepted: true,
+    });
+
+    const updatedValues = {
+        referredUsers: [user], // Update referredUsers array with the new user
+    };
+    await userService.updateUser(referrer.id, updatedValues);
+}
 
 const login = catchAsync(async (req: AuthRequest, res: Response) => {
     const { email, password } = req.body;
