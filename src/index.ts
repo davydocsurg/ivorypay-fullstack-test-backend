@@ -1,7 +1,6 @@
 import app from "./app";
 import { Server } from "http";
-import { config, logger } from "../config";
-import { AppDataSource } from "./utils";
+import { AppDataSource, config, logger } from "./config";
 
 let server: Server;
 AppDataSource.initialize().then(() => {

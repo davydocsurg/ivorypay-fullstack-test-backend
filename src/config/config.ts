@@ -43,6 +43,30 @@ if (error) {
     throw new Error(`Config validation error: ${error.message}`);
 }
 
+const cookieOptions = {
+    expires: new Date(Date.now() + parseInt("90", 10) * 24 * 60 * 60 * 1000),
+    secure: false,
+    httpOnly: true,
+};
+
+const mailTrapOptions = {
+    host: process.env.MAIL_HOST,
+    port: process.env.MAIL_PORT,
+    user: process.env.MAIL_USERNAME,
+    pass: process.env.MAIL_PASSWORD,
+    secure: false,
+};
+
+const baseUrl =
+    process.env.NODE_ENV === "development"
+        ? "http://" + process.env.APP_HOST + ":" + process.env.APP_PORT
+        : "https://host.com";
+
+const systemMail = "noreply@ivorypay-test.com";
+
+const DEVELOPMENT = "development";
+const PRODUCTION = "production";
+
 export default {
     env: envVars.NODE_ENV,
     port: envVars.PORT,
@@ -55,6 +79,8 @@ export default {
         verifyEmailExpirationMinutes:
             envVars.JWT_VERIFY_EMAIL_EXPIRATION_MINUTES,
     },
+    cookieOptions,
+    systemMail,
     email: {
         host: envVars.SMTP_HOST,
         port: envVars.SMTP_PORT,
@@ -66,4 +92,8 @@ export default {
         debug: true,
         from: envVars.EMAIL_FROM,
     },
+    baseUrl,
+    mailTrapOptions,
+    DEVELOPMENT,
+    PRODUCTION,
 };
