@@ -11,5 +11,10 @@ walletRoute.post(
     [isAuthenticated, validate(walletValidation.deposit), checkWallet],
     walletController.depositFunds
 );
+walletRoute.post(
+    "/transfer",
+    [isAuthenticated, validate(walletValidation.transfer), checkWallet],
+    walletController.transferFunds
+);
 
 export default walletRoute;

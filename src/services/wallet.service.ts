@@ -13,6 +13,7 @@ import { EntityManager } from "typeorm";
 
 const walletRepo = AppDataSource.getRepository(Wallet);
 const transactionRepo = AppDataSource.getRepository(Transaction);
+const userRepo = AppDataSource.getRepository(User);
 
 /**
  * Create a wallet
@@ -25,6 +26,7 @@ const createWallet = async (user: User) => {
         user.wallet?.address!,
         user.id
     );
+    logger.info("Existing wallet: " + existingWallet?.address);
     if (existingWallet) {
         throw new ApiError(httpStatus.BAD_REQUEST, "You already have a wallet");
     }
@@ -34,6 +36,11 @@ const createWallet = async (user: User) => {
         address: generateWalletAddress(),
     });
     await walletRepo.save(wallet);
+
+    // update user entity with wallet
+    user.wallet = wallet;
+    await userRepo.save(user);
+
     return wallet;
 };
 
@@ -60,6 +67,58 @@ const depositFunds = async (user: User, amount: number) => {
     };
 
     return sanitizedWallet;
+};
+
+/**
+ * Transfer funds from one wallet to another
+ * @param {User} user
+ * @param {string} receiverAddress
+ * @param {number} amount
+ * @returns {Promise<Wallet>}
+ */
+const transferFunds = async (
+    user: User,
+    receiverAddress: string,
+    amount: number
+) => {
+    const wallet = await walletRepo.findOne({
+        where: { user: { id: user.id } },
+    });
+    if (!wallet) {
+        throw new ApiError(httpStatus.NOT_FOUND, "User does not have a wallet");
+    }
+
+    const receiverWallet = await getWalletByAddress(receiverAddress, user.id);
+    if (!receiverWallet) {
+        throw new ApiError(
+            httpStatus.NOT_FOUND,
+            "Receiver does not have a wallet"
+        );
+    }
+
+    const newWallet = await updateWalletBalance(wallet, amount, "subtract");
+    const newReceiverWallet = await updateWalletBalance(
+        receiverWallet,
+        amount,
+        "add"
+    );
+
+    const sanitizedWallet = {
+        id: newWallet.id,
+        balance: newWallet.balance,
+        address: newWallet.address,
+    };
+
+    const sanitizedReceiverWallet = {
+        id: newReceiverWallet.id,
+        balance: newReceiverWallet.balance,
+        address: newReceiverWallet.address,
+    };
+
+    return {
+        senderWallet: sanitizedWallet,
+        receiverWallet: sanitizedReceiverWallet,
+    };
 };
 
 /**
@@ -158,4 +217,7 @@ const getWalletByAddress = async (address: string, userId: string) => {
 export default {
     createWallet,
     depositFunds,
+    transferFunds,
+    generateWalletAddress,
+    getWalletByAddress,
 };

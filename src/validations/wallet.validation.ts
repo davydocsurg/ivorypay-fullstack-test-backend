@@ -16,7 +16,7 @@ const withdraw = {
 const transfer = {
     body: Joi.object().keys({
         amount: Joi.number().required().custom(depositAmount),
-        receiverWalletId: Joi.string().required(),
+        recipientEmail: Joi.string().email().required(),
     }),
 };
 
