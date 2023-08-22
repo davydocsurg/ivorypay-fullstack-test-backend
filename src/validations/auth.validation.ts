@@ -17,6 +17,12 @@ const login = {
     }),
 };
 
+const findUser = {
+    body: Joi.object().keys({
+        email: Joi.string().required(),
+    }),
+};
+
 const logout = {
     body: Joi.object().keys({
         refreshToken: Joi.string().required(),
@@ -58,4 +64,5 @@ export default {
     forgotPassword,
     resetPassword,
     verifyEmail,
+    findUser,
 };

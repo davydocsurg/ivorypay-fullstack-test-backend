@@ -1,5 +1,5 @@
 import httpStatus from "http-status";
-import { AppDataSource } from "../config";
+import { AppDataSource, logger } from "../config";
 import { Invitation, User } from "../database/entities";
 import { ApiError } from "../utils";
 
@@ -34,6 +34,7 @@ const fetchUsers = async <Key extends keyof User>(
         "role",
         "createdAt",
         "updatedAt",
+        "isActive",
     ] as Key[]
 ): Promise<Pick<User, Key>[]> => {
     return userRepo.find({
@@ -43,28 +44,15 @@ const fetchUsers = async <Key extends keyof User>(
 
 /**
  * Disable a user
- * @param {string} id
+ * @param {string} email
  * @returns {Promise<User>}
- * @param {Array<Key>} keys
  * @returns {Promise<Pick<User, Key> | null>}
  */
 const disableUser = async <Key extends keyof User>(
-    id: string,
-    keys: Key[] = [
-        "id",
-        "email",
-        "firstName",
-        "lastName",
-        "password",
-        "role",
-        "createdAt",
-        "updatedAt",
-    ] as Key[]
+    email: string
 ): Promise<Pick<User, Key> | null> => {
-    const user = await userRepo.findOne({
-        where: { id },
-        select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {}),
-    });
+    const user = await getUserByEmail(email);
+    logger.info(user?.email);
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, "User not found");
     }
@@ -74,12 +62,28 @@ const disableUser = async <Key extends keyof User>(
 
 /**
  * Enable a user
- * @param {string} id
+ * @param {string} email
  * @returns {Promise<User>}
- * @param {Array<Key>} keys
  * @returns {Promise<Pick<User, Key> | null>}
  */
 const enableUser = async <Key extends keyof User>(
+    email: string
+): Promise<Pick<User, Key> | null> => {
+    const user = await getUserByEmail(email);
+    if (!user) {
+        throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+    }
+    user.isActive = true;
+    return await userRepo.save(user);
+};
+
+/**
+ * Get user by id
+ * @param {string} id
+ * @param {Array<Key>} keys
+ * @returns {Promise<Pick<User, Key> | null>}
+ */
+const getUserById = async <Key extends keyof User>(
     id: string,
     keys: Key[] = [
         "id",
@@ -90,17 +94,18 @@ const enableUser = async <Key extends keyof User>(
         "role",
         "createdAt",
         "updatedAt",
+        "isActive",
     ] as Key[]
 ): Promise<Pick<User, Key> | null> => {
-    const user = await userRepo.findOne({
+    const user = userRepo.findOne({
         where: { id },
         select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {}),
-    });
+    }) as Promise<Pick<User, Key> | null>;
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, "User not found");
     }
-    user.isActive = true;
-    return await userRepo.save(user);
+
+    return user;
 };
 
 /**

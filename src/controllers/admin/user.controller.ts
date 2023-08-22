@@ -9,15 +9,15 @@ const fetchUsers = catchAsync(async (req: AuthRequest, res: Response) => {
 });
 
 const disableUser = catchAsync(async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const user = await userService.disableUser(id);
-    res.send(user);
+    const { email } = req.body;
+    const user = await userService.disableUser(email);
+    res.send({ user });
 });
 
 const enableUser = catchAsync(async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const user = await userService.enableUser(id);
-    res.send(user);
+    const { email } = req.body;
+    const user = await userService.enableUser(email);
+    res.send({ user });
 });
 
 export default {
