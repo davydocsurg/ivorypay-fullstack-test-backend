@@ -28,11 +28,8 @@ const registerUser = (data: registerDetails, referralCode: string) => {
         .send(data);
 };
 
-const loginUser = ({ email, password }: loginDetails) => {
-    return server.get("/api/v1/auth/login").send({
-        email,
-        password,
-    });
+const loginUser = (data: loginDetails) => {
+    return server.post("/api/v1/auth/login").send(data);
 };
 
 export { fetchAdmin, loginUser, registerUser };
