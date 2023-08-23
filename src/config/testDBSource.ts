@@ -12,10 +12,10 @@ import {
     synchronize,
     type,
     username,
-} from "../../ormconfig.json";
+} from "../../ormconfigtest.json";
 import config from "./config";
 
-export const AppDataSource = new DataSource({
+export const TestDataSource = new DataSource({
     type: type as any,
     host: host,
     port: port,

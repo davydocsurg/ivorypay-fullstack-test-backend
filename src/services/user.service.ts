@@ -7,6 +7,30 @@ const userRepo = AppDataSource.getRepository(User);
 const inviteRepo = AppDataSource.getRepository(Invitation);
 
 /**
+ * Fetch Admin user
+ * @returns {Promise<User>}
+ * @returns {Promise<Pick<User, Key> | null>}
+ * @param {Array<Key>} keys
+ */
+const fetchAdmin = async <Key extends keyof User>(
+    keys: Key[] = [
+        "id",
+        "email",
+        "firstName",
+        "lastName",
+        "referralCode",
+        "password",
+        "role",
+        "createdAt",
+        "updatedAt",
+        "isActive",
+    ] as Key[]
+): Promise<Pick<User, Key> | null> => {
+    const email = config.adminEmail;
+    return await getUserByEmail(email, keys);
+};
+
+/**
  * Create a user
  * @param data - Partial<User>
  * @returns Promise<User>
@@ -123,6 +147,7 @@ const getUserByEmail = async <Key extends keyof User>(
         "role",
         "isActive",
         "wallet",
+        "referralCode",
         "createdAt",
         "updatedAt",
     ] as Key[]
@@ -264,6 +289,7 @@ const getUserByReferralCode = async <Key extends keyof User>(
 };
 
 export default {
+    fetchAdmin,
     createUser,
     getUserByEmail,
     verifyReferralCode,

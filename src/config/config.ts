@@ -66,6 +66,9 @@ const systemMail = "noreply@ivorypay-test.com";
 
 const DEVELOPMENT = "development";
 const PRODUCTION = "production";
+const TEST = "test";
+
+const adminEmail = "admin@ivorypay-test.com";
 
 export default {
     env: envVars.NODE_ENV,
@@ -96,4 +99,6 @@ export default {
     mailTrapOptions,
     DEVELOPMENT,
     PRODUCTION,
+    TEST,
+    adminEmail,
 };

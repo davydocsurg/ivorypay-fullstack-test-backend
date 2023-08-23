@@ -11,4 +11,6 @@ userRoute.post(
     userController.sendInvitations
 );
 
+userRoute.get("/admin", userController.fetchAdmin);
+
 export default userRoute;

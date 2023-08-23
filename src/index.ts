@@ -35,3 +35,5 @@ process.on("SIGTERM", () => {
         server.close();
     }
 });
+
+export default server!;
