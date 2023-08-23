@@ -1,14 +1,14 @@
 import { v4 as uuidv4 } from "uuid";
 import httpStatus from "http-status";
 import BigDecimal from "js-big-decimal";
-import { AppDataSource, logger } from "../config";
+import { AppDataSource, config, logger } from "../config";
 import {
     Transaction,
     TransactionEnumType,
     User,
     Wallet,
 } from "../database/entities";
-import { ApiError } from "../utils";
+import { ApiError, NodeMailerConfig } from "../utils";
 import { EntityManager } from "typeorm";
 
 const walletRepo = AppDataSource.getRepository(Wallet);
@@ -71,12 +71,14 @@ const depositFunds = async (user: User, amount: number) => {
  * @param {User} user
  * @param {Wallet} recipientWallet
  * @param {number} amount
+ * @param {string|null} recipientEmail
  * @returns {Promise<Wallet>}
  */
 const transferFunds = async (
     user: User,
     recipientWallet: Wallet,
-    amount: number
+    amount: number,
+    recipientEmail?: string
 ) => {
     const wallet = await getWalletByUserId(user.id);
     if (!wallet) {
@@ -101,6 +103,14 @@ const transferFunds = async (
         wallet,
         recipientWallet
     );
+
+    if (transaction) {
+        await sendTransactionNotification(
+            user,
+            recipientEmail!,
+            TransactionEnumType.TRANSFER
+        );
+    }
 
     const sanitizedTransaction = {
         id: transaction.id,
@@ -234,6 +244,39 @@ const getWalletByUserId = async (userId: string) => {
     return await walletRepo.findOne({
         where: { user: { id: userId } },
     });
+};
+
+/**
+ * Send notification to both users when a transaction is made
+ * @param {User} sender
+ * @param {User} recipient
+ * @param {TransactionEnumType} type
+ * @returns {Promise<void>}
+ */
+const sendTransactionNotification = async (
+    sender: User,
+    recipientEmail: string,
+    type: TransactionEnumType
+) => {
+    const senderMailOptions = {
+        from: config.systemMail,
+        to: sender.email,
+        subject: "Transaction Notification",
+        text: `You have made a ${type} transaction to ${recipientEmail}`,
+    };
+
+    const recipientMailOptions = {
+        from: config.systemMail,
+        to: recipientEmail,
+        subject: "Transaction Notification",
+        text: `You have received a ${type} transaction from ${sender.email}`,
+    };
+
+    // Send mail to sender
+    await NodeMailerConfig(senderMailOptions);
+
+    // Send mail to recipient
+    await NodeMailerConfig(recipientMailOptions);
 };
 
 export default {

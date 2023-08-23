@@ -65,7 +65,8 @@ const transferFunds = catchAsync(async (req: AuthRequest, res: Response) => {
     const wallet = await walletService.transferFunds(
         authUser,
         recipientWallet,
-        amount
+        amount,
+        recipient.email
     );
 
     res.send({ wallet });
