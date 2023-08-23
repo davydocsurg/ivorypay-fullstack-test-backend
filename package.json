@@ -14,7 +14,7 @@
         "dbtest:sync": "yarn build && yarn typeorm schema:sync -- -d src/config/testDBSource.ts",
         "dbtest:drop": "yarn build && yarn typeorm schema:drop -- -d src/config/testDBSource.ts",
         "dbtest:seed": "yarn build && yarn ts-node src/database/seeds/AdminTest.ts",
-        "jest": "cross-env NODE_ENV=test && jest -i --colors --verbose --detectOpenHandles",
+        "jest": "cross-env NODE_ENV=test jest -i --colors --verbose --detectOpenHandles",
         "test": "yarn dbtest:drop && yarn dbtest:sync && yarn dbtest:seed && yarn jest"
     },
     "repository": {
