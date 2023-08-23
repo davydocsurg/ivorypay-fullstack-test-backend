@@ -70,7 +70,7 @@ const TEST = "test";
 
 const adminEmail = "admin@ivorypay-test.com";
 
-const testReferralCode = "TESTCODE";
+const testReferralCode = "TESTREFERRALCODE";
 
 const isTest = envVars.NODE_ENV === TEST;
 

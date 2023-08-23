@@ -48,20 +48,6 @@ const register = catchAsync(async (req: AuthRequest, res: Response) => {
 async function validateAndRetrieveReferrer(
     referralCode: string
 ): Promise<User> {
-    if (config.env === config.TEST) {
-        const testReferralCode = config.testReferralCode;
-        const referrer = await userService.getUserByReferralCode(
-            testReferralCode
-        );
-        if (!referrer) {
-            throw new ApiError(
-                httpStatus.BAD_REQUEST,
-                "Invalid test referral code"
-            );
-        }
-        return referrer;
-    }
-
     if (!referralCode) {
         throw new ApiError(httpStatus.BAD_REQUEST, "Referral code is required");
     }

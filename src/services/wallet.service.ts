@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import httpStatus from "http-status";
 import BigDecimal from "js-big-decimal";
-import { AppDataSource, config, logger } from "../config";
+import { AppDataSource, TestDataSource, config } from "../config";
 import {
     Transaction,
     TransactionEnumType,
@@ -9,11 +9,16 @@ import {
     Wallet,
 } from "../database/entities";
 import { ApiError, NodeMailerConfig } from "../utils";
-import { EntityManager } from "typeorm";
 
-const walletRepo = AppDataSource.getRepository(Wallet);
-const transactionRepo = AppDataSource.getRepository(Transaction);
-const userRepo = AppDataSource.getRepository(User);
+const walletRepo = config.isTest
+    ? TestDataSource.getRepository(Wallet)
+    : AppDataSource.getRepository(Wallet);
+const transactionRepo = config.isTest
+    ? TestDataSource.getRepository(Transaction)
+    : AppDataSource.getRepository(Transaction);
+const userRepo = config.isTest
+    ? TestDataSource.getRepository(User)
+    : AppDataSource.getRepository(User);
 
 /**
  * Create a wallet

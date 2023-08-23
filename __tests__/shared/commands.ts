@@ -22,9 +22,9 @@ const fetchAdmin = () => {
     return server.get("/api/v1/users/admin");
 };
 
-const registerUser = (data: registerDetails, params: registerParams) => {
+const registerUser = (data: registerDetails, referralCode: string) => {
     return server
-        .get(`/api/v1/auth/register?${params.referralCode}`)
+        .post(`/api/v1/auth/register?referralCode=${referralCode}`)
         .send(data);
 };
 
