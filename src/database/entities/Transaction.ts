@@ -11,12 +11,6 @@ export enum TransactionEnumType {
 
 @Entity("transactions")
 export class Transaction extends Model {
-    @ManyToOne(() => Wallet, (wallet) => wallet.outgoingTransactions)
-    senderWallet: Wallet;
-
-    @ManyToOne(() => Wallet, (wallet) => wallet.incomingTransactions)
-    receiverWallet: Wallet;
-
     @Column({ type: "decimal", precision: 10, scale: 2 })
     amount: number;
 
@@ -29,4 +23,10 @@ export class Transaction extends Model {
 
     @ManyToOne(() => User, (user) => user.transactions)
     user: User;
+
+    @ManyToOne(() => Wallet, (wallet) => wallet.outgoingTransactions)
+    senderWallet: Wallet;
+
+    @ManyToOne(() => Wallet, (wallet) => wallet.incomingTransactions)
+    receiverWallet: Wallet;
 }

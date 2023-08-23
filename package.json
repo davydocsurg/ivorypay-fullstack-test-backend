@@ -9,7 +9,7 @@
         "build": "rm -rf build && tsc -p .",
         "typeorm": "typeorm-ts-node-commonjs",
         "migrate": "yarn build && yarn typeorm migration:generate -d src/config/data-source.ts src/database/migrations/added-user-entity",
-        "seed": "yarn build && yarn ts-node src/database/seeds/Admin.ts",
+        "db:seed": "yarn build && yarn ts-node src/database/seeds/Admin.ts",
         "db:drop": "yarn build && yarn typeorm schema:drop -- -d src/config/data-source.ts",
         "db:sync": "yarn build && yarn typeorm schema:sync -- -d src/config/data-source.ts"
     },
@@ -43,6 +43,7 @@
         "http-status": "^1.6.2",
         "jest": "^29.6.3",
         "joi": "^17.9.2",
+        "js-big-decimal": "^2.0.4",
         "jsonwebtoken": "^9.0.1",
         "moment": "^2.29.4",
         "morgan": "^1.10.0",

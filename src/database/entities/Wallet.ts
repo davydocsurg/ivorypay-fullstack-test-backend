@@ -1,11 +1,12 @@
-import { Entity, Column, ManyToOne, OneToMany } from "typeorm";
+import { Entity, Column, OneToMany, OneToOne, JoinColumn } from "typeorm";
 import { User } from "./User";
 import { Transaction } from "./Transaction";
 import Model from "./Model";
 
 @Entity("wallets")
 export class Wallet extends Model {
-    @ManyToOne(() => User, (user) => user.wallet)
+    @OneToOne(() => User, (user) => user.wallet, { onDelete: "CASCADE" })
+    @JoinColumn()
     user: User;
 
     @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
