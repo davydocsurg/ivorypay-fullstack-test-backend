@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import httpStatus from "http-status";
 import { authService, userService, walletService } from "../services";
 import {
@@ -104,8 +104,18 @@ const login = catchAsync(async (req: AuthRequest, res: Response) => {
     res.send({ user: userWithoutPassword, token });
 });
 
-const testA = catchAsync(async (req: AuthRequest, res: Response) => {
-    logger.info("testA");
+/**
+ * Log user out
+ * @param {AuthRequest} req
+ * @param {Response} res
+ * @returns {Promise<void>}
+ */
+const logout = catchAsync((req: AuthRequest, res: Response) => {
+    // remove user from req object
+    req.user = null!;
+    // clear cookie containing jwt
+    res.clearCookie("jwt", config.cookieOptions);
+    res.status(httpStatus.OK).send({ message: "Logged out successfully" });
 });
 
-export default { register, login, testA };
+export default { register, login, logout };

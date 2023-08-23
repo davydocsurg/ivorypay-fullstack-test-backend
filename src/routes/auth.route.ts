@@ -1,5 +1,5 @@
 import express from "express";
-import { validate } from "../middlewares";
+import { isAuthenticated, validate } from "../middlewares";
 import { authController } from "../controllers";
 import { authValidation } from "../validations";
 
@@ -11,5 +11,6 @@ authRoute.post(
     authController.register
 );
 authRoute.post("/login", validate(authValidation.login), authController.login);
+authRoute.post("/logout", isAuthenticated, authController.logout);
 
 export default authRoute;
