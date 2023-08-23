@@ -70,6 +70,10 @@ const TEST = "test";
 
 const adminEmail = "admin@ivorypay-test.com";
 
+const testReferralCode = "TESTCODE";
+
+const isTest = envVars.NODE_ENV === TEST;
+
 export default {
     env: envVars.NODE_ENV,
     port: envVars.PORT,
@@ -101,4 +105,6 @@ export default {
     PRODUCTION,
     TEST,
     adminEmail,
+    testReferralCode,
+    isTest,
 };

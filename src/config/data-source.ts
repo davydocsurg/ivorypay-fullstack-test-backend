@@ -13,7 +13,6 @@ import {
     type,
     username,
 } from "../../ormconfig.json";
-import config from "./config";
 
 export const AppDataSource = new DataSource({
     type: type as any,
@@ -21,7 +20,7 @@ export const AppDataSource = new DataSource({
     port: port,
     username: username,
     password: password,
-    database: config.env === config.TEST ? "ivorypay-test" : database,
+    database: database,
     synchronize: synchronize,
     logging: logging,
     entities: entities,

@@ -2,7 +2,7 @@ import { logger, AppDataSource, config, TestDataSource } from "../../config";
 import { encryptPassword, generateReferralCode } from "../../utils";
 import { User, RoleEnumType } from "../entities";
 
-if (config.env === config.TEST) {
+if (config.isTest) {
     TestDataSource.initialize().then(() => {
         const seedAdmin = async () => {
             try {
@@ -12,7 +12,7 @@ if (config.env === config.TEST) {
                     email: "admin@ivorypay-test.com",
                 });
                 if (existingAdmin) {
-                    logger.info("Admin user already exists.");
+                    logger.info("Test: Admin user already exists.");
                     return;
                 }
                 const admin = {

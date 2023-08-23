@@ -1,10 +1,14 @@
 import httpStatus from "http-status";
-import { AppDataSource, config, logger } from "../config";
+import { AppDataSource, TestDataSource, config, logger } from "../config";
 import { Invitation, User } from "../database/entities";
 import { ApiError, NodeMailerConfig } from "../utils";
 
-const userRepo = AppDataSource.getRepository(User);
-const inviteRepo = AppDataSource.getRepository(Invitation);
+const userRepo = config.isTest
+    ? TestDataSource.getRepository(User)
+    : AppDataSource.getRepository(User);
+const inviteRepo = config.isTest
+    ? TestDataSource.getRepository(Invitation)
+    : AppDataSource.getRepository(Invitation);
 
 /**
  * Fetch Admin user
