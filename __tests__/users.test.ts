@@ -8,7 +8,7 @@ setUpDB();
 describe("Fetch Admin", () => {
     test("should fetch an admin", async () => {
         const admin = await fetchAdmin();
-        console.log(admin.body);
         expect(admin.status).toBe(httpStatus.OK);
+        expect(admin.body.admin).toHaveProperty("email");
     });
 });

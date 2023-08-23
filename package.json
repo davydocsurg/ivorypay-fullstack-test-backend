@@ -9,10 +9,13 @@
         "typeorm": "typeorm-ts-node-commonjs",
         "migrate": "yarn build && yarn typeorm migration:generate -d src/config/data-source.ts src/database/migrations/added-user-entity",
         "db:seed": "yarn build && yarn ts-node src/database/seeds/Admin.ts",
-        "db:drop": "yarn build && yarn typeorm schema:drop -- -d src/config/data-source.ts",
         "db:sync": "yarn build && yarn typeorm schema:sync -- -d src/config/data-source.ts",
-        "jest": "cross-env NODE_ENV=test jest -i --colors --verbose --detectOpenHandles",
-        "test": "yarn db:drop && yarn db:sync && yarn db:seed && yarn jest"
+        "db:drop": "yarn build && yarn typeorm schema:drop -- -d src/config/data-source.ts",
+        "dbtest:sync": "yarn build && yarn typeorm schema:sync -- -d src/config/testDBSource.ts",
+        "dbtest:drop": "yarn build && yarn typeorm schema:drop -- -d src/config/testDBSource.ts",
+        "dbtest:seed": "yarn build && yarn ts-node src/database/seeds/AdminTest.ts",
+        "jest": "cross-env NODE_ENV=test && jest -i --colors --verbose --detectOpenHandles",
+        "test": "yarn dbtest:drop && yarn dbtest:sync && yarn dbtest:seed && yarn jest"
     },
     "repository": {
         "type": "git",

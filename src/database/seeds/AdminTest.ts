@@ -1,17 +1,17 @@
-import { logger, AppDataSource } from "../../config";
+import { TestDataSource, logger } from "../../config";
 import { encryptPassword, generateReferralCode } from "../../utils";
-import { User, RoleEnumType } from "../entities";
+import { RoleEnumType, User } from "../entities";
 
-AppDataSource.initialize().then(() => {
+TestDataSource.initialize().then(() => {
     const seedAdmin = async () => {
         try {
-            const userRepo = AppDataSource.getRepository(User);
+            const userRepo = TestDataSource.getRepository(User);
             // Check if admin already exists
             const existingAdmin = await userRepo.findOneBy({
                 email: "admin@ivorypay-test.com",
             });
             if (existingAdmin) {
-                logger.info("Admin user already exists.");
+                logger.info("Test: Admin user already exists.");
                 return;
             }
             const admin = {
@@ -29,5 +29,5 @@ AppDataSource.initialize().then(() => {
             logger.error(error);
         }
     };
-    seedAdmin();
+    return seedAdmin();
 });
