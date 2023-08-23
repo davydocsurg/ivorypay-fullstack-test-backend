@@ -214,8 +214,8 @@ const sendInvitations = async (
     role?: string
 ) => {
     const referralLink = role
-        ? `${config.baseUrl}/register?referral-code=${referralCode}?role=${role}`
-        : `${config.baseUrl}/register?referral-code=${referralCode}`;
+        ? `${config.frontendUrl}/register?referral-code=${referralCode}?role=${role}`
+        : `${config.frontendUrl}/register?referral-code=${referralCode}`;
     const uniqueEmails = new Set<string>();
 
     for (const email of emails) {

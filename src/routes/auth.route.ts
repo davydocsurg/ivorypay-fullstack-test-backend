@@ -6,7 +6,7 @@ import { authValidation } from "../validations";
 const authRoute = express.Router();
 
 authRoute.post(
-    "/register",
+    "/register", // optionally include role
     validate(authValidation.register),
     authController.register
 );

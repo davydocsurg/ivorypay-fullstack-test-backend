@@ -62,6 +62,11 @@ const baseUrl =
         ? "http://" + process.env.APP_HOST + ":" + process.env.APP_PORT
         : "https://host.com";
 
+const frontendUrl =
+    process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test"
+        ? "http://localhost:5173"
+        : "https://host.com";
+
 const systemMail = "noreply@ivorypay-test.com";
 
 const DEVELOPMENT = "development";
@@ -107,4 +112,5 @@ export default {
     adminEmail,
     testReferralCode,
     isTest,
+    frontendUrl,
 };
