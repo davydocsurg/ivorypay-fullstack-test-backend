@@ -27,10 +27,7 @@ const userRepo = config.isTest
  */
 const createWallet = async (user: User) => {
     // Check if user already has a wallet
-    const existingWallet = await getWalletByAddress(
-        user.wallet?.address!,
-        user.id
-    );
+    const existingWallet = await getWalletByUserId(user.id);
     if (existingWallet) {
         throw new ApiError(httpStatus.BAD_REQUEST, "You already have a wallet");
     }

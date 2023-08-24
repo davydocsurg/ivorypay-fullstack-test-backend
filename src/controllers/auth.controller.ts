@@ -101,8 +101,9 @@ const login = catchAsync(async (req: AuthRequest, res: Response) => {
     const user = await authService.loginWithEmailAndPassword(email, password);
     const token = authService.createSendToken(user, res);
     req.user = user;
+    const wallet = await walletService.getWalletByUserId(user.id);
     const userWithoutPassword = exclude(user, ["password"]);
-    res.send({ user: userWithoutPassword, token });
+    res.send({ user: userWithoutPassword, token, wallet });
 });
 
 /**

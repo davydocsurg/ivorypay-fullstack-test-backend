@@ -24,7 +24,8 @@ const depositFunds = catchAsync(async (req: AuthRequest, res: Response) => {
         throw new ApiError(httpStatus.NOT_FOUND, "User not found");
     }
 
-    const wallet = await walletService.depositFunds(user, amount);
+    await walletService.depositFunds(user, amount);
+    const wallet = await walletService.getWalletByUserId(req.user.id);
 
     res.send({ wallet });
 });
@@ -62,12 +63,15 @@ const transferFunds = catchAsync(async (req: AuthRequest, res: Response) => {
             "You cannot transfer funds to yourself. Deposit funds instead."
         );
     }
-    const wallet = await walletService.transferFunds(
+
+    await walletService.transferFunds(
         authUser,
         recipientWallet,
         amount,
         recipient.email
     );
+
+    const wallet = await walletService.getWalletByUserId(sender.id);
 
     res.send({ wallet });
 });
@@ -76,7 +80,8 @@ const withdrawFunds = catchAsync(async (req: AuthRequest, res: Response) => {
     const { amount } = req.body;
     const user = req.user;
 
-    const wallet = await walletService.withdrawFunds(user, amount);
+    await walletService.withdrawFunds(user, amount);
+    const wallet = await walletService.getWalletByUserId(user.id);
     res.send({ wallet });
 });
 

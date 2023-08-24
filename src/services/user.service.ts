@@ -236,11 +236,11 @@ const sendInvitations = async (
                 subject: "Invitation to Join IvoryPayTest",
                 html: `
                     <h2>You're Invited to Join IvoryPayTest${
-                        role !== null && " as an Admin"
+                        role === "admin" ? " as an Admin" : ""
                     }!</h2>
                     <p>Hello there,</p>
                     <p>You've been invited to join IvoryPayTest${
-                        role !== null && " as an admin"
+                        role === "admin" ? " as an admin" : ""
                     }, a platform that offers amazing services.</p>
                     <p>Sign up using this referral link to get started:</p>
                     <a href="${referralLink}">${referralLink}</a>
