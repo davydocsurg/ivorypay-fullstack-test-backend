@@ -20,24 +20,10 @@ describe("Auth routes", () => {
 
     test("should return 200 and successfully login a user if request data is ok", async () => {
         const adminRes = await fetchAdmin();
-        const newUserRes = await registerUser(
-            anotherUserData,
-            adminRes.body.admin.referralCode
-        );
-        const { email, password } = newUserRes.body;
-        console.log("====================================");
-        console.log(email, password, newUserRes.body);
-        console.log("====================================");
-        const loginDetails = {
-            email,
-            password,
-        };
+        await registerUser(anotherUserData, adminRes.body.admin.referralCode);
+        const { email, password } = anotherUserData;
 
-        const res = await loginUser(loginDetails);
-        console.log("====================================");
-        console.log(res.body);
-        console.log("====================================");
-
+        const res = await loginUser({ email, password });
         expect(res.status).toBe(httpStatus.OK);
         expect(res.body).toEqual({
             ...res.body,
