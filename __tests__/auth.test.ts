@@ -29,4 +29,15 @@ describe("Auth routes", () => {
             ...res.body,
         });
     });
+
+    test("should return 400 error if email is missing", async () => {
+        const adminRes = await fetchAdmin();
+        const res = await registerUser(
+            { ...userData, email: "" },
+            adminRes.body.admin.referralCode
+        );
+
+        expect(res.status).toBe(httpStatus.BAD_REQUEST);
+        expect(res.body.message).toBe('"email" is not allowed to be empty');
+    });
 });
