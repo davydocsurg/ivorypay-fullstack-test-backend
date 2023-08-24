@@ -22,7 +22,7 @@ const enableUser = catchAsync(async (req: Request, res: Response) => {
 
 const sendAdminInvitations = catchAsync(
     async (req: AuthRequest, res: Response) => {
-        const { emails, role } = req.body;
+        const { emails, role = "admin" } = req.body;
         const { firstName, lastName, email, referralCode } = req.user;
         const name = firstName + " " + lastName;
         const message = await userService.sendInvitations(

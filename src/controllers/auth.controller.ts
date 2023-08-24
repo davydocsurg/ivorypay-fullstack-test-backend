@@ -15,6 +15,7 @@ import { RoleEnumType, User } from "../database/entities";
 const register = catchAsync(async (req: AuthRequest, res: Response) => {
     const { email, password, firstName, lastName } = req.body;
     const { referralCode, role } = req.query;
+    logger.info("Referral code: " + role);
 
     // Validate referral code and get referrer
     const referrer = await validateAndRetrieveReferrer(referralCode as string);

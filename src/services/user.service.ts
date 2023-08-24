@@ -86,7 +86,6 @@ const disableUser = async <Key extends keyof User>(
     email: string
 ): Promise<Pick<User, Key> | null> => {
     const user = await getUserByEmail(email);
-    logger.info(user?.email);
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, "User not found");
     }
@@ -220,7 +219,7 @@ const sendInvitations = async (
     role?: string
 ) => {
     const referralLink = role
-        ? `${config.frontendUrl}/register?referral-code=${referralCode}?role=${role}`
+        ? `${config.frontendUrl}/register?referral-code=${referralCode}&role=${role}`
         : `${config.frontendUrl}/register?referral-code=${referralCode}`;
     const uniqueEmails = new Set<string>();
 
