@@ -2,6 +2,7 @@ import httpStatus from "http-status";
 import { AppDataSource, TestDataSource, config, logger } from "../config";
 import { Invitation, User } from "../database/entities";
 import { ApiError, NodeMailerConfig } from "../utils";
+import { Not } from "typeorm";
 
 const userRepo = config.isTest
     ? TestDataSource.getRepository(User)
@@ -49,23 +50,28 @@ const createUser = async (data: Partial<User>) => {
 /**
  * Fetch all users
  * @returns {Promise<User[]>}
+ * @param {string} authAdminId
  * @param {Array<Key>} keys
  * @returns {Promise<Pick<User, Key>[]>}
  */
 const fetchUsers = async <Key extends keyof User>(
+    authAdminId: string,
     keys: Key[] = [
         "id",
         "email",
         "firstName",
         "lastName",
-        "password",
         "role",
         "createdAt",
         "updatedAt",
         "isActive",
     ] as Key[]
 ): Promise<Pick<User, Key>[]> => {
+    // return all users except the authenticated user
     return userRepo.find({
+        where: {
+            id: Not(authAdminId),
+        },
         select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {}),
     }) as Promise<Pick<User, Key>[]>;
 };

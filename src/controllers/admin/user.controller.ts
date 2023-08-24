@@ -4,7 +4,7 @@ import { catchAsync } from "../../utils";
 import { AuthRequest } from "../../types";
 
 const fetchUsers = catchAsync(async (req: AuthRequest, res: Response) => {
-    const users = await userService.fetchUsers();
+    const users = await userService.fetchUsers(req.user.id);
     res.send({ users });
 });
 

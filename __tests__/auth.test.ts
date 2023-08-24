@@ -1,12 +1,10 @@
-import { generateRandomUserData } from "./__mocks__/data";
+import { userData, anotherUserData } from "./__mocks__/data";
 import httpStatus from "http-status";
 import { describe, test, expect } from "@jest/globals";
 import setUpDB from "./utils/setUpDB";
 import { fetchAdmin, loginUser, registerUser } from "./shared/commands";
 
 setUpDB();
-
-const userData = generateRandomUserData();
 
 describe("Auth routes", () => {
     test("should return 201 and successfully register user if request data is ok", async () => {
@@ -23,7 +21,7 @@ describe("Auth routes", () => {
     test("should return 200 and successfully login a user if request data is ok", async () => {
         const adminRes = await fetchAdmin();
         const newUserRes = await registerUser(
-            userData,
+            anotherUserData,
             adminRes.body.admin.referralCode
         );
         const { email, password } = newUserRes.body;
