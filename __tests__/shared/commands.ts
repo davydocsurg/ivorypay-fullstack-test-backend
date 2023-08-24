@@ -32,4 +32,16 @@ const loginUser = (data: loginDetails) => {
     return server.post("/api/v1/auth/login").send({ ...data });
 };
 
-export { fetchAdmin, loginUser, registerUser };
+const sendAdminInvitations = (
+    emails: string[],
+    referralCode: string,
+    role = "admin"
+) => {
+    return server
+        .post(
+            `/api/v1/admin/users/invitation?referral-code=${referralCode}&role=${role}`
+        )
+        .send({ emails });
+};
+
+export { fetchAdmin, loginUser, registerUser, sendAdminInvitations };
