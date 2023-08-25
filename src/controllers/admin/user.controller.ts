@@ -5,19 +5,19 @@ import { AuthRequest } from "../../types";
 
 const fetchUsers = catchAsync(async (req: AuthRequest, res: Response) => {
     const users = await userService.fetchUsers(req.user.id);
-    res.send({ users });
+    res.send({ users, message: "Users fetched successfully" });
 });
 
 const disableUser = catchAsync(async (req: Request, res: Response) => {
     const { email } = req.body;
     const user = await userService.disableUser(email);
-    res.send({ user });
+    res.send({ user, message: "User account disabled successfully" });
 });
 
 const enableUser = catchAsync(async (req: Request, res: Response) => {
     const { email } = req.body;
     const user = await userService.enableUser(email);
-    res.send({ user });
+    res.send({ user, message: "User account enabled successfully" });
 });
 
 const sendAdminInvitations = catchAsync(

@@ -117,7 +117,11 @@ export default authRoute;
  *               type: object
  *               properties:
  *                 user:
- *                   $ref: '#/database/entities/User'
+ *                   type: object
+ *                 token:
+ *                   type: string
+ *                 wallet:
+ *                   type: object
  *       "401":
  *         description: Invalid email or password
  *         content:
@@ -126,7 +130,7 @@ export default authRoute;
  *               $ref: '#/database/entities/Error'
  *             example:
  *               code: 401
- *               message: Invalid email or password
+ *               message: Invalid email or password or Your account is disabled. Please contact support.
  */
 
 /**
