@@ -45,7 +45,7 @@
     },
     "homepage": "https://github.com/davydocsurg/ivorypay-fullstack-test-backend#readme",
     "engines": {
-        "node": ">=18.12.0"
+        "node": ">=16.0.0"
     },
     "dependencies": {
         "bcryptjs": "^2.4.3",
