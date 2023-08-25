@@ -281,6 +281,18 @@ const sendTransactionNotification = async (
     await NodeMailerConfig(recipientMailOptions);
 };
 
+/**
+ * Fetch auth user's transactions
+ * @param {User} user
+ * @returns {Promise<Transaction[]>}
+ */
+const getTransactions = async (user: User) => {
+    return await transactionRepo.find({
+        where: { user: { id: user.id } },
+        order: { createdAt: "DESC" },
+    });
+};
+
 export default {
     createWallet,
     depositFunds,
@@ -289,4 +301,5 @@ export default {
     getWalletByAddress,
     getWalletByUserId,
     withdrawFunds,
+    getTransactions,
 };

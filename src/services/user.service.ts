@@ -297,6 +297,11 @@ const getUserByReferralCode = async <Key extends keyof User>(
     }) as Promise<Pick<User, Key> | null>;
 };
 
+/**
+ * Fetch auth user's invitee
+ *
+ */
+
 export default {
     fetchAdmin,
     createUser,

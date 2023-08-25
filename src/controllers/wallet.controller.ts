@@ -89,9 +89,16 @@ const withdrawFunds = catchAsync(async (req: AuthRequest, res: Response) => {
     res.send({ wallet, message: "Funds withdrawn successfully" });
 });
 
+const getTransactions = catchAsync(async (req: AuthRequest, res: Response) => {
+    const user = req.user;
+    const transactions = await walletService.getTransactions(user);
+    res.send({ message: "Transactions fetched successfully", transactions });
+});
+
 export default {
     createWallet,
     depositFunds,
     transferFunds,
     withdrawFunds,
+    getTransactions,
 };

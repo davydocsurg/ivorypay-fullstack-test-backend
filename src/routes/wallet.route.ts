@@ -147,4 +147,24 @@ walletRoute.post(
     walletController.withdrawFunds
 );
 
+/**
+ * @swagger
+ * /wallets/transactions:
+ *   post:
+ *     summary: Fetch authenticated user's transactions
+ *     tags: [Wallet]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Transactions fetched successfully
+ *       401:
+ *         description: Unauthorized
+ */
+walletRoute.post(
+    "/transactions",
+    [isAuthenticated, checkWallet],
+    walletController.getTransactions
+);
+
 export default walletRoute;
