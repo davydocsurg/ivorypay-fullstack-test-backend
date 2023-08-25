@@ -8,7 +8,7 @@ import { ApiError } from "./utils";
 
 const app = express();
 const allowlist = [
-    "https://ivorypay-fullstack-test-frontend.vercel.app/",
+    "https://ivorypay-fullstack-test-frontend.vercel.app",
     "http://localhost:3000",
     "http://localhost:5173",
 ];
