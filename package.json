@@ -44,6 +44,9 @@
         "url": "https://github.com/davydocsurg/ivorypay-fullstack-test-backend/issues"
     },
     "homepage": "https://github.com/davydocsurg/ivorypay-fullstack-test-backend#readme",
+    "node": {
+        "version": "18.12.1"
+    },
     "dependencies": {
         "bcryptjs": "^2.4.3",
         "config": "^3.3.9",
