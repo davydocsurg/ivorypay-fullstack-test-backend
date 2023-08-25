@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  ivorypay-test:
+    container_name: ivorypay-test-dev
+    command: ["/app/entrypoint.sh"]
+    build: .
+    image: ivorypay-test
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017/node-boilerplate
+    ports:
+      - '8080:8080'
+    depends_on:
+      - postgresdb
+    volumes:
+      - .:/usr/src/ivorypay-test
+      - ./entrypoint.sh:/app/entrypoint.sh
+    networks:
+      - node-network
+
+  postgresdb:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+
+    ports:
+      - '5435:5435'
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    networks:
+      - node-network
+
+volumes:
+  dbdata:
+    driver: local
+
+networks:
+  node-network:
+    driver: bridge

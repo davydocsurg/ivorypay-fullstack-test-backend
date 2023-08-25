@@ -24,9 +24,10 @@ const depositFunds = catchAsync(async (req: AuthRequest, res: Response) => {
         throw new ApiError(httpStatus.NOT_FOUND, "User not found");
     }
 
-    const wallet = await walletService.depositFunds(user, amount);
+    await walletService.depositFunds(user, amount);
+    const wallet = await walletService.getWalletByUserId(req.user.id);
 
-    res.send({ wallet });
+    res.send({ wallet, message: "Funds deposited successfully" });
 });
 
 const transferFunds = catchAsync(async (req: AuthRequest, res: Response) => {
@@ -62,22 +63,36 @@ const transferFunds = catchAsync(async (req: AuthRequest, res: Response) => {
             "You cannot transfer funds to yourself. Deposit funds instead."
         );
     }
-    const wallet = await walletService.transferFunds(
+
+    await walletService.transferFunds(
         authUser,
         recipientWallet,
         amount,
         recipient.email
     );
 
-    res.send({ wallet });
+    const wallet = await walletService.getWalletByUserId(sender.id);
+
+    res.send({
+        wallet,
+        message:
+            "Funds transferred successfully. Check your email for more details.",
+    });
 });
 
 const withdrawFunds = catchAsync(async (req: AuthRequest, res: Response) => {
     const { amount } = req.body;
     const user = req.user;
 
-    const wallet = await walletService.withdrawFunds(user, amount);
-    res.send({ wallet });
+    await walletService.withdrawFunds(user, amount);
+    const wallet = await walletService.getWalletByUserId(user.id);
+    res.send({ wallet, message: "Funds withdrawn successfully" });
+});
+
+const getTransactions = catchAsync(async (req: AuthRequest, res: Response) => {
+    const user = req.user;
+    const transactions = await walletService.getTransactions(user);
+    res.send({ message: "Transactions fetched successfully", transactions });
 });
 
 export default {
@@ -85,4 +100,5 @@ export default {
     depositFunds,
     transferFunds,
     withdrawFunds,
+    getTransactions,
 };

@@ -25,3 +25,10 @@ export const withdrawAmount: Joi.CustomValidator<number> = (value, helpers) => {
     }
     return value;
 };
+
+export const transferAmount: Joi.CustomValidator<number> = (value, helpers) => {
+    if (value <= 0) {
+        return helpers.error("transfer amount must be atleast $1");
+    }
+    return value;
+};

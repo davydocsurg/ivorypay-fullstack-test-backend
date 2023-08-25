@@ -1,10 +1,10 @@
 {
     "type": "postgres",
-    "host": "postgresdb",
+    "host": "localhost",
     "port": 5432,
     "username": "postgres",
     "password": "secret",
-    "database": "postgres",
+    "database": "ivorypay-test",
     "synchronize": true,
     "logging": false,
     "entities": ["src/database/entities/*{.ts,.js}"],

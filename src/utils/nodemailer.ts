@@ -47,7 +47,7 @@ const NodeMailerConfig = async ({
 
     try {
         const info =
-            config.env === config.DEVELOPMENT
+            config.env === config.DEVELOPMENT || config.env === config.TEST
                 ? transporter.sendMail(mailOptions)
                 : transporter.sendMail(mailOptions);
         return info;

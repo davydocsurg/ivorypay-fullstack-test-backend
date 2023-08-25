@@ -62,10 +62,22 @@ const baseUrl =
         ? "http://" + process.env.APP_HOST + ":" + process.env.APP_PORT
         : "https://host.com";
 
+const frontendUrl =
+    process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test"
+        ? "http://localhost:5173"
+        : "https://host.com";
+
 const systemMail = "noreply@ivorypay-test.com";
 
 const DEVELOPMENT = "development";
 const PRODUCTION = "production";
+const TEST = "test";
+
+const adminEmail = "admin@ivorypay-test.com";
+
+const testReferralCode = "TESTREFERRALCODE";
+
+const isTest = envVars.NODE_ENV === TEST;
 
 export default {
     env: envVars.NODE_ENV,
@@ -96,4 +108,9 @@ export default {
     mailTrapOptions,
     DEVELOPMENT,
     PRODUCTION,
+    TEST,
+    adminEmail,
+    testReferralCode,
+    isTest,
+    frontendUrl,
 };

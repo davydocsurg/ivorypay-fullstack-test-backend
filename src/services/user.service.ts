@@ -1,10 +1,39 @@
 import httpStatus from "http-status";
-import { AppDataSource, config, logger } from "../config";
+import { AppDataSource, TestDataSource, config, logger } from "../config";
 import { Invitation, User } from "../database/entities";
 import { ApiError, NodeMailerConfig } from "../utils";
+import { Not } from "typeorm";
 
-const userRepo = AppDataSource.getRepository(User);
-const inviteRepo = AppDataSource.getRepository(Invitation);
+const userRepo = config.isTest
+    ? TestDataSource.getRepository(User)
+    : AppDataSource.getRepository(User);
+const inviteRepo = config.isTest
+    ? TestDataSource.getRepository(Invitation)
+    : AppDataSource.getRepository(Invitation);
+
+/**
+ * Fetch Admin user
+ * @returns {Promise<User>}
+ * @returns {Promise<Pick<User, Key> | null>}
+ * @param {Array<Key>} keys
+ */
+const fetchAdmin = async <Key extends keyof User>(
+    keys: Key[] = [
+        "id",
+        "email",
+        "firstName",
+        "lastName",
+        "referralCode",
+        "password",
+        "role",
+        "createdAt",
+        "updatedAt",
+        "isActive",
+    ] as Key[]
+): Promise<Pick<User, Key> | null> => {
+    const email = config.adminEmail;
+    return await getUserByEmail(email, keys);
+};
 
 /**
  * Create a user
@@ -21,23 +50,28 @@ const createUser = async (data: Partial<User>) => {
 /**
  * Fetch all users
  * @returns {Promise<User[]>}
+ * @param {string} authAdminId
  * @param {Array<Key>} keys
  * @returns {Promise<Pick<User, Key>[]>}
  */
 const fetchUsers = async <Key extends keyof User>(
+    authAdminId: string,
     keys: Key[] = [
         "id",
         "email",
         "firstName",
         "lastName",
-        "password",
         "role",
         "createdAt",
         "updatedAt",
         "isActive",
     ] as Key[]
 ): Promise<Pick<User, Key>[]> => {
+    // return all users except the authenticated user
     return userRepo.find({
+        where: {
+            id: Not(authAdminId),
+        },
         select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {}),
     }) as Promise<Pick<User, Key>[]>;
 };
@@ -52,7 +86,6 @@ const disableUser = async <Key extends keyof User>(
     email: string
 ): Promise<Pick<User, Key> | null> => {
     const user = await getUserByEmail(email);
-    logger.info(user?.email);
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, "User not found");
     }
@@ -123,6 +156,7 @@ const getUserByEmail = async <Key extends keyof User>(
         "role",
         "isActive",
         "wallet",
+        "referralCode",
         "createdAt",
         "updatedAt",
     ] as Key[]
@@ -185,8 +219,8 @@ const sendInvitations = async (
     role?: string
 ) => {
     const referralLink = role
-        ? `${config.baseUrl}/register?referral-code=${referralCode}?role=${role}`
-        : `${config.baseUrl}/register?referral-code=${referralCode}`;
+        ? `${config.frontendUrl}/register?referral-code=${referralCode}&role=${role}`
+        : `${config.frontendUrl}/register?referral-code=${referralCode}`;
     const uniqueEmails = new Set<string>();
 
     for (const email of emails) {
@@ -202,11 +236,11 @@ const sendInvitations = async (
                 subject: "Invitation to Join IvoryPayTest",
                 html: `
                     <h2>You're Invited to Join IvoryPayTest${
-                        role !== null && " as an Admin"
+                        role === "admin" ? " as an Admin" : ""
                     }!</h2>
                     <p>Hello there,</p>
                     <p>You've been invited to join IvoryPayTest${
-                        role !== null && " as an admin"
+                        role === "admin" ? " as an admin" : ""
                     }, a platform that offers amazing services.</p>
                     <p>Sign up using this referral link to get started:</p>
                     <a href="${referralLink}">${referralLink}</a>
@@ -263,7 +297,13 @@ const getUserByReferralCode = async <Key extends keyof User>(
     }) as Promise<Pick<User, Key> | null>;
 };
 
+/**
+ * Fetch auth user's invitee
+ *
+ */
+
 export default {
+    fetchAdmin,
     createUser,
     getUserByEmail,
     verifyReferralCode,

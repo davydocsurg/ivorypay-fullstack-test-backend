@@ -1,0 +1,6 @@
+version: '3.8'
+
+services:
+  ivorypay-test:
+    container_name: ivorypay-test-dev
+    command: yarn dev

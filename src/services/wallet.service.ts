@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import httpStatus from "http-status";
 import BigDecimal from "js-big-decimal";
-import { AppDataSource, config, logger } from "../config";
+import { AppDataSource, TestDataSource, config } from "../config";
 import {
     Transaction,
     TransactionEnumType,
@@ -9,11 +9,16 @@ import {
     Wallet,
 } from "../database/entities";
 import { ApiError, NodeMailerConfig } from "../utils";
-import { EntityManager } from "typeorm";
 
-const walletRepo = AppDataSource.getRepository(Wallet);
-const transactionRepo = AppDataSource.getRepository(Transaction);
-const userRepo = AppDataSource.getRepository(User);
+const walletRepo = config.isTest
+    ? TestDataSource.getRepository(Wallet)
+    : AppDataSource.getRepository(Wallet);
+const transactionRepo = config.isTest
+    ? TestDataSource.getRepository(Transaction)
+    : AppDataSource.getRepository(Transaction);
+const userRepo = config.isTest
+    ? TestDataSource.getRepository(User)
+    : AppDataSource.getRepository(User);
 
 /**
  * Create a wallet
@@ -22,10 +27,7 @@ const userRepo = AppDataSource.getRepository(User);
  */
 const createWallet = async (user: User) => {
     // Check if user already has a wallet
-    const existingWallet = await getWalletByAddress(
-        user.wallet?.address!,
-        user.id
-    );
+    const existingWallet = await getWalletByUserId(user.id);
     if (existingWallet) {
         throw new ApiError(httpStatus.BAD_REQUEST, "You already have a wallet");
     }
@@ -279,6 +281,19 @@ const sendTransactionNotification = async (
     await NodeMailerConfig(recipientMailOptions);
 };
 
+/**
+ * Fetch auth user's transactions
+ * @param {User} user
+ * @returns {Promise<Transaction[]>}
+ */
+const getTransactions = async (user: User) => {
+    return await transactionRepo.find({
+        where: { user: { id: user.id } },
+        order: { createdAt: "DESC" },
+        relations: ["senderWallet", "receiverWallet"],
+    });
+};
+
 export default {
     createWallet,
     depositFunds,
@@ -287,4 +302,5 @@ export default {
     getWalletByAddress,
     getWalletByUserId,
     withdrawFunds,
+    getTransactions,
 };

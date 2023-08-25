@@ -13,5 +13,6 @@
     "rootDir": ".",
     "types": ["node", "./src/types/nodemailer-sendinblue-transport.d.ts"],
     "resolveJsonModule": true
-  }
+  },
+  "exclude": ["node_modules"]
 }
