@@ -27,7 +27,7 @@ const depositFunds = catchAsync(async (req: AuthRequest, res: Response) => {
     await walletService.depositFunds(user, amount);
     const wallet = await walletService.getWalletByUserId(req.user.id);
 
-    res.send({ wallet });
+    res.send({ wallet, message: "Funds deposited successfully" });
 });
 
 const transferFunds = catchAsync(async (req: AuthRequest, res: Response) => {
@@ -73,7 +73,11 @@ const transferFunds = catchAsync(async (req: AuthRequest, res: Response) => {
 
     const wallet = await walletService.getWalletByUserId(sender.id);
 
-    res.send({ wallet });
+    res.send({
+        wallet,
+        message:
+            "Funds transferred successfully. Check your email for more details.",
+    });
 });
 
 const withdrawFunds = catchAsync(async (req: AuthRequest, res: Response) => {
@@ -82,7 +86,7 @@ const withdrawFunds = catchAsync(async (req: AuthRequest, res: Response) => {
 
     await walletService.withdrawFunds(user, amount);
     const wallet = await walletService.getWalletByUserId(user.id);
-    res.send({ wallet });
+    res.send({ wallet, message: "Funds withdrawn successfully" });
 });
 
 export default {

@@ -107,7 +107,7 @@ export default authRoute;
  *                 format: password
  *             example:
  *               email: fake@example.com
- *               password: Password1!
+ *               password: Password1@
  *     responses:
  *       "200":
  *         description: OK
