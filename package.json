@@ -4,6 +4,7 @@
     "description": "IvoryPay FullStack Test - Wallet App Backend",
     "main": "src/index.ts",
     "scripts": {
+        "start": "yarn build && pm2 start ecosystem.config.json --no-daemon",
         "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
         "build": "rm -rf build && tsc -p .",
         "typeorm": "typeorm-ts-node-commonjs",
@@ -16,7 +17,12 @@
         "dbtest:drop": "yarn build && yarn typeorm schema:drop -- -d src/config/testDBSource.ts",
         "dbtest:seed": "yarn build && yarn ts-node src/database/seeds/AdminTest.ts",
         "jest": "cross-env NODE_ENV=test jest -i --colors --verbose --detectOpenHandles",
-        "test": "yarn dbtest:drop && yarn dbtest:sync && yarn dbtest:seed && yarn jest"
+        "test": "yarn dbtest:drop && yarn dbtest:sync && yarn dbtest:seed && yarn jest",
+        "docker:prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up",
+        "docker:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
+        "docker:test": "docker-compose -f docker-compose.yml -f docker-compose.test.yml up",
+        "docker:dev-db:start": "docker-compose -f docker-compose.only-db-dev.yml up -d",
+        "docker:dev-db:stop": "docker-compose -f docker-compose.only-db-dev.yml down"
     },
     "repository": {
         "type": "git",
@@ -57,6 +63,7 @@
         "nodemailer-sendinblue-transport": "^2.0.1",
         "npm-run-all": "^4.1.5",
         "pg": "^8.11.3",
+        "pm2": "^5.3.0",
         "reflect-metadata": "^0.1.13",
         "supertest": "^6.3.3",
         "swagger-jsdoc": "^6.2.8",

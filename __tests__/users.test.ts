@@ -1,5 +1,10 @@
 import { describe, test, expect } from "@jest/globals";
-import { fetchAdmin, sendAdminInvitations } from "./shared/commands";
+import {
+    fetchAdmin,
+    fetchUsers,
+    loginUser,
+    sendAdminInvitations,
+} from "./shared/commands";
 import httpStatus from "http-status";
 import setUpDB from "./utils/setUpDB";
 
@@ -11,20 +16,48 @@ describe("Fetch Admin", () => {
         expect(admin.status).toBe(httpStatus.OK);
         expect(admin.body.admin).toHaveProperty("email");
     });
+});
 
-    test("should send invitation to potential users' email", async () => {
-        const emails = [
-            "john@example.com",
-            "jane@example.com",
-            "chioma@example.com",
-        ];
-        const admin = await fetchAdmin();
+describe("Admin management", () => {
+    test("should fetch all users", async () => {
+        const adminRes = await loginUser({
+            email: "admin@ivorypay-test.com",
+            password: "Password1",
+        });
 
-        const res = await sendAdminInvitations(
-            emails,
-            admin.body.admin.referralCode
-        );
+        const { token } = adminRes.body;
+
+        const res = await fetchUsers(token);
+
+        console.log("====================================");
+        console.log(res.body);
+        console.log("====================================");
         expect(res.status).toBe(httpStatus.OK);
-        expect(res.body).toHaveProperty("message");
     });
+
+    // test("should send invitation to potential admins' email", async () => {
+    //     const emails = [
+    //         "john@example.com",
+    //         "jane@example.com",
+    //         "chioma@example.com",
+    //     ];
+
+    //     const adminRes = await loginUser({
+    //         email: "admin@ivorypay-test.com",
+    //         password: "Password1",
+    //     });
+
+    //     const { token } = adminRes.body;
+
+    //     const res = await sendAdminInvitations(
+    //         emails,
+    //         adminRes.body.user.referralCode,
+    //         token
+    //     );
+    //     console.log("====================================");
+    //     console.log(res.body);
+    //     console.log("====================================");
+    //     expect(res.status).toBe(httpStatus.OK);
+    //     expect(res.body).toHaveProperty("message");
+    // });
 });

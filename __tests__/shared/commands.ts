@@ -22,6 +22,12 @@ const fetchAdmin = () => {
     return server.get("/api/v1/users/admin");
 };
 
+const fetchUsers = (token: string) => {
+    return server
+        .get("/api/v1/admin/users")
+        .set("Authorization", `Bearer ${token}`);
+};
+
 const registerUser = (data: registerDetails, referralCode: string) => {
     return server
         .post(`/api/v1/auth/register?referralCode=${referralCode}`)
@@ -35,13 +41,21 @@ const loginUser = (data: loginDetails) => {
 const sendAdminInvitations = (
     emails: string[],
     referralCode: string,
-    role = "admin"
+    token: string
 ) => {
+    const role = "admin";
     return server
         .post(
             `/api/v1/admin/users/invitation?referral-code=${referralCode}&role=${role}`
         )
+        .set("Authorization", `Bearer ${token}`)
         .send({ emails });
 };
 
-export { fetchAdmin, loginUser, registerUser, sendAdminInvitations };
+export {
+    fetchAdmin,
+    loginUser,
+    registerUser,
+    sendAdminInvitations,
+    fetchUsers,
+};
