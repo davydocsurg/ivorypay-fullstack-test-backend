@@ -290,6 +290,7 @@ const getTransactions = async (user: User) => {
     return await transactionRepo.find({
         where: { user: { id: user.id } },
         order: { createdAt: "DESC" },
+        relations: ["senderWallet", "receiverWallet"],
     });
 };
 
