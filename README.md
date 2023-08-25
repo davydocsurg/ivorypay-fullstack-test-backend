@@ -109,7 +109,7 @@ yarn docker:dev
 
 ## API Documentation
 
-The API documentation for the IvoryPay Test Backend is available in the Swagger format. To access the documentation, run the backend server and visit the `/api/v1/docs` endpoint in your web browser or here at: [https://ivorypay-test-backend.onrender.com](https://ivorypay-test-backend.onrender.com).
+The API documentation for the IvoryPay Test Backend is available in the Swagger format. To access the documentation, run the backend server and visit the `/api/v1/docs` endpoint in your web browser or here at: [https://ivorypay-test-backend.onrender.com/api/v1/docs](https://ivorypay-test-backend.onrender.com/api/v1/docs).
 
 ## Database
 
