@@ -8,7 +8,7 @@ const swaggerDef = {
         version,
         license: {
             name: "MIT",
-            url: repository,
+            url: repository.url,
         },
     },
     servers: [
