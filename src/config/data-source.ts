@@ -10,7 +10,7 @@ const subscribers = ["src/database/entities/*{.ts,.js}"];
 
 export const AppDataSource = new DataSource({
     type: process.env.DATABASE_TYPE as any,
-    host: process.env.APP_HOST,
+    host: process.env.DATABASE_HOST,
     port: process.env.DATABASE_PORT as any,
     username: process.env.DATABASE_USERNAME,
     password: process.env.DATABASE_PASSWORD,
