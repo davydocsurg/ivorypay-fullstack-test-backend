@@ -150,7 +150,7 @@ walletRoute.post(
 /**
  * @swagger
  * /wallets/transactions:
- *   post:
+ *   get:
  *     summary: Fetch authenticated user's transactions
  *     tags: [Wallet]
  *     security:
@@ -161,7 +161,7 @@ walletRoute.post(
  *       401:
  *         description: Unauthorized
  */
-walletRoute.post(
+walletRoute.get(
     "/transactions",
     [isAuthenticated, checkWallet],
     walletController.getTransactions
