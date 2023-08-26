@@ -60,7 +60,7 @@ const mailTrapOptions = {
 const baseUrl =
     process.env.NODE_ENV === "development"
         ? "http://" + process.env.APP_HOST + ":" + process.env.APP_PORT
-        : "https://ivorypay-fullstack-test-frontend.vercel.app";
+        : "https://ivorypay-test-backend.onrender.com";
 
 const frontendUrl =
     process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test"
