@@ -25,24 +25,28 @@ const defaultRoutes = [
         path: "/wallets",
         route: walletRoute,
     },
-];
-
-const devRoutes = [
-    // routes available only in development mode
     {
         path: "/docs",
         route: docsRoute,
     },
 ];
 
+// const devRoutes = [
+//     // routes available only in development mode
+//     {
+//         path: "/docs",
+//         route: docsRoute,
+//     },
+// ];
+
 defaultRoutes.forEach((route) => {
     routes.use(route.path, route.route);
 });
 
-if (config.env === "development") {
-    devRoutes.forEach((route) => {
-        routes.use(route.path, route.route);
-    });
-}
+// if (config.env === "development") {
+//     devRoutes.forEach((route) => {
+//         routes.use(route.path, route.route);
+//     });
+// }
 
 export default routes;

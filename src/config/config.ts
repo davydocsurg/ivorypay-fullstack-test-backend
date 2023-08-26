@@ -60,12 +60,12 @@ const mailTrapOptions = {
 const baseUrl =
     process.env.NODE_ENV === "development"
         ? "http://" + process.env.APP_HOST + ":" + process.env.APP_PORT
-        : "https://host.com";
+        : "https://ivorypay-fullstack-test-frontend.vercel.app";
 
 const frontendUrl =
     process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test"
         ? "http://localhost:5173"
-        : "https://host.com";
+        : "https://ivorypay-fullstack-test-frontend.vercel.app";
 
 const systemMail = "noreply@ivorypay-test.com";
 
